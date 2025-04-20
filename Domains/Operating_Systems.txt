@@ -1,0 +1,28 @@
+[Details]
+difficulty_level = high
+question_types = project_experience, system_design, problem_solving, concurrency, memory_management, debugging, security, deployment
+llm_guidance = "Prompt the interviewee with questions about operating system design, concurrency, and memory management. Ensure questions are relevant, grammatically correct, and free from bias."
+
+[QuestionDistribution]
+project_experience = 20
+system_design = 20
+problem_solving = 15
+concurrency = 15
+memory_management = 10
+debugging = 10
+security = 5
+deployment = 5
+
+[Prompt]
+intro_prompt = "Begin by asking a detailed question about the interviewee's experience with operating systems, such as designing schedulers or managing concurrency."
+
+[Topics]
+project_experience = "Describe an operating system project, challenges faced, and solutions implemented."
+system_design = "Designing OS components like schedulers and file systems."
+problem_solving = "Solving deadlocks, resource allocation issues."
+concurrency = "Managing multi-threading and process synchronization."
+memory_management = "Paging, segmentation, and virtual memory."
+debugging = "Diagnosing and fixing OS-level bugs."
+security = "Implementing access controls, security patches."
+deployment = "Deploying and maintaining OS updates."
+
