@@ -1,0 +1,214 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PDF Replication</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                padding: 0;
+                background-color: #f8f8f8;
+            }
+            .container {
+                width: 800px;
+                margin: auto;
+                background: #fff;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                padding: 20px;
+            }
+            .header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .header img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                margin-right: 20px;
+            }
+            .header .details {
+                font-size: 1.2em;
+            }
+            .bar-chart, .stacked-bar {
+                margin: 20px 0;
+            }
+            .questions {
+                margin-top: 30px;
+                border-top: 1px solid #ccc;
+                padding-top: 20px;
+            }
+            .table-container {
+                margin-top: 20px;
+                overflow-x: auto;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            th, td {
+                border: 1px solid #CCCCFF;
+                padding: 10px;
+                text-align: left;
+                vertical-align: top;
+            }
+            th {
+                background-color: #CCCCFF;
+                font-weight: bold;
+            }
+            td {
+                font-size: 0.9em;
+                line-height: 1.4;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <img src="person-placeholder.png" alt="Person Image">
+                <div class="details">
+                    <strong>Full Name</strong><br>
+                    Date of Interview: December 10, 2024<br>
+                    <strong>58%</strong> Cumulative AI Score
+                </div>
+            </div>
+            <div class="bar-chart">
+                <canvas id="barChart"></canvas>
+            </div>
+            <div class="stacked-bar">
+                <canvas id="stackedBarChart"></canvas>
+            </div>
+            <div class="questions">
+                <h3>Question Answers</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Answer</th>
+                                <th>Feedback</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script>
+            const data = {"questions": [{"question": "Considering a real-world application of AI/ML, such as fraud detection or medical diagnosis, can you describe a specific instance where you encountered a challenge related to model interpretability, and how your chosen approach to address this challenge impacted the overall model performance and its acceptance by stakeholders?", "answer": "hi my name is Sania how are you hi my name is Sani", "feedback": "Accuracy Score: 4/10\nClarity Score: 2/10\nPreciseness Score: 1/10\nFeedback: The response is unclear and lacks relevance to the question. It appears to be a greeting instead of an answer to the question. There is no mention of a specific instance of a challenge related to model interpretability and how it was addressed.\n\nThe response does not address the question at all, making it difficult to evaluate the candidate's understanding of the topic or their ability to provide a specific example of a challenge related to model interpretability. The lack of clarity and precision makes it hard to provide any meaningful feedback or guidance for improvement."}, {"question": "Can you describe a machine learning project where you encountered unexpected data bias, detailing the steps you took to identify, mitigate, and evaluate the effectiveness of your mitigation strategy?", "answer": "hi my name is Sani", "feedback": "Accuracy Score: 6/10\nClarity Score: 8/10\nPreciseness Score: 7/10\nFeedback: None\n\nThe candidate provides a brief response describing a machine learning project where they encountered unexpected data bias. They explain the steps they took to identify, mitigate, and evaluate the effectiveness of their mitigation strategy. The response is clear and concise, providing specific details about the steps taken to address the data bias. However, the response could benefit from more context and depth, particularly in terms of the specifics of the project and the challenges faced. Overall, the response is well-organized and easy to follow, but may lack the level of detail and technical expertise expected for a machine learning project."}], "stackedBarChartData": {"labels": ["Q1", "Q2"], "datasets": [{"label": "Accuracy", "data": [4, 6]}, {"label": "Preciseness", "data": [2, 8]}, {"label": "Clarity", "data": [1, 7]}]}, "barChartData": {"labels": ["neutral", "sad"], "scores": [0.9963829517364502, 0.8396704196929932], "colors": ["rgba(150, 150, 150, 0.65)", "rgba(0, 0, 200, 0.65)"]}};
+
+            // Populate Questions Table
+            const tableBody = document.querySelector('.table-container tbody');
+            tableBody.innerHTML = '';
+           
+            data.questions.forEach((item) => {
+                let feedbackText = "None"; // Default value
+
+                const feedbackIndex = item.feedback.toLowerCase().indexOf("feedback:");
+                if (feedbackIndex !== -1) {
+                    let extractedText = item.feedback.substring(feedbackIndex + 9);
+
+                    // More robust "empty" check:
+                    if (extractedText.trim().length > 0) {
+                        feedbackText = extractedText.trim();
+                    }
+                }
+
+                const row = `<tr>
+                    <td>${item.question}</td>
+                    <td>${item.answer}</td>
+                    <td>${feedbackText}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+
+            // Bar Chart
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.barChartData.labels,
+                    datasets: [{
+                        label: '', // Empty label to avoid default legend
+                        data: data.barChartData.scores,
+                        backgroundColor: data.barChartData.colors,
+                        borderColor: data.barChartData.colors,
+                        borderWidth: 1,
+                        borderRadius: 20
+                    }]
+                    
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        datalabels: {
+                            color: 'black',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: (value, context) => {
+                                return data.barChartData.labels[context.dataIndex];
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Stacked Bar Chart
+    const stackedCtx = document.getElementById('stackedBarChart').getContext('2d');
+    new Chart(stackedCtx, {
+        type: 'bar',
+        data: {
+            labels: data.stackedBarChartData.labels,
+            datasets: data.stackedBarChartData.datasets.map((dataset, index) => {
+                let backgroundColor;
+                // Define different colors for each dataset
+                switch (index) {
+                    case 0:
+                        backgroundColor = 'rgba(108, 229, 232, 1)'; // Accuracy color
+                        break;
+                    case 1:
+                        backgroundColor = 'rgba(65, 184, 213, 1)'; // Preciseness color
+                        break;
+                    case 2:
+                        backgroundColor = 'rgba(45, 139, 186, 1)'; // Clarity color
+                        break;
+                    default:
+                        backgroundColor = 'rgba(0, 0, 0, 0.1)'; // Default color
+                }
+                return {
+                    ...dataset,
+                    backgroundColor: backgroundColor, // Assign the specific color
+                    borderRadius: 10
+                };
+            })
+        },
+        options: {
+            indexAxis: 'y', // Horizontal bars
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            },
+            scales: {
+                x: { stacked: true, beginAtZero: true },
+                y: { stacked: true }
+            }
+        }
+    });
+
+        </script>
+    </body>
+    </html>
+    
