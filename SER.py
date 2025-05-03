@@ -47,7 +47,7 @@ def get_wav_files_from_directory(directory):
 
 # Specify the directory containing .wav files
 def sentiment():
-    directory_path = r"C:\Users\LENOVO\Documents\FYP\audio-llm-SER-video"
+    directory_path = r"audio-llm-SER-video"
 
     # Get list of .wav files from the directory
     file_list = get_wav_files_from_directory(directory_path)

@@ -2,9 +2,11 @@ import csv
 import os
 import json
 from groq import Groq
+import dotenv
 
+dotenv.load_dotenv()
 # Initialize GROQ client
-client = Groq(api_key=os.environ.get("groq"))
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 def read_session_history_csv(csv_file):
     """Reads questions and answers from session_history.csv."""

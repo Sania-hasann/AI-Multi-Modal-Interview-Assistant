@@ -1,0 +1,6 @@
+Question: "Considering a real-world application of AI/ML, such as fraud detection or medical diagnosis, can you describe a specific instance where you encountered a challenge related to model explainability or interpretability, and what alternative approaches, if any, did you explore to address this challenge and ensure responsible AI implementation?"
+Answer: "Transcription error: Speech was unintelligible."
+Topics: error, speech, transcription
+Sentiment: Sentiment: 0.00 (polarity), 0.00 (subjectivity)
+FER_Output: fer_response_1.json
+

@@ -7,10 +7,10 @@ from nltk.tokenize import word_tokenize
 
 # Load Spacy's English tokenizer, tagger, parser, NER, and word vectors
 nlp = spacy.load("en_core_web_sm")
-nltk.data.path.append("C:/Users/LENOVO/Documents/FYP/audio-llm-SER/Fyp/lib/nltk_data")
+nltk.data.path.append("lib/nltk_data")
 # Ensure nltk resources are downloaded
-nltk.download('stopwords')
-nltk.download('punkt_tab', force=True, download_dir='C:/Users/LENOVO/Documents/FYP/audio-llm-SER/Fyp/lib/nltk_data')
+# nltk.download('stopwords')
+# nltk.download('punkt_tab', force=True, download_dir='lib/nltk_data')
 
 
 # Stop words list

@@ -1,6 +1,6 @@
 [
     {
-        "filename": "C:\\Users\\LENOVO\\Documents\\FYP\\audio-llm-SER-video\\response_Artificial Intelligence and Machine Learning_1.wav",
+        "filename": "response_Artificial Intelligence and Machine Learning_1.wav",
         "dominant_emotion": "neutral",
         "confidence": 0.9963829517364502,
         "all_predictions": [
@@ -27,7 +27,7 @@
         ]
     },
     {
-        "filename": "C:\\Users\\LENOVO\\Documents\\FYP\\audio-llm-SER-video\\response_Artificial Intelligence and Machine Learning_2.wav",
+        "filename": "response_Artificial Intelligence and Machine Learning_2.wav",
         "dominant_emotion": "sad",
         "confidence": 0.8396704196929932,
         "all_predictions": [

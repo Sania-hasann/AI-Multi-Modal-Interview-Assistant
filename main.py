@@ -13,7 +13,9 @@ from recording_transcription import start_video_recording, stop_video_recording
 import scoring
 import SER
 import gen_report
+import dotenv
 
+dotenv.load_dotenv()
 
 # Set up Google Gemini API
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))

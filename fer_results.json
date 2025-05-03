@@ -1,0 +1,23 @@
+{
+    "1": {
+        "emotion_counts": {
+            "happy": 19,
+            "surprise": 10,
+            "sad": 14,
+            "anger": 1,
+            "disgust": 1,
+            "fear": 3,
+            "neutral": 79
+        },
+        "emotion_percentages": {
+            "happy": 14.960629921259844,
+            "surprise": 7.874015748031496,
+            "sad": 11.023622047244094,
+            "anger": 0.7874015748031495,
+            "disgust": 0.7874015748031495,
+            "fear": 2.3622047244094486,
+            "neutral": 62.20472440944882
+        },
+        "dominant_emotion": "neutral"
+    }
+}
