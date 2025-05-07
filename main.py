@@ -1,18 +1,25 @@
+# Standard library imports
 import os
 import time
 import random
-import google.generativeai as genai
 import re
+
+# Third-party library imports
+import google.generativeai as genai
 import pyttsx3
 from gtts import gTTS
-from recording_transcription import record_and_transcribe
-from config_loader import load_domain_config, get_subdomains
-from context_awareness import parse_transcription, extract_topics, sentiment_score
-from txt_to_csv import convert_txt_to_csv
-from recording_transcription import start_video_recording, stop_video_recording
-import scoring
-import SER
-import gen_report
+
+# Local application imports
+# Recording and transcription
+from utils.recording_transcription import record_and_transcribe, start_video_recording, stop_video_recording
+from utils.config_loader import load_domain_config, get_subdomains
+from utils.context_awareness import parse_transcription, extract_topics, sentiment_score
+from utils.txt_to_csv import convert_txt_to_csv
+import utils.gen_report
+
+# Application modules
+import src.scoring as scoring
+import src.SER as SER
 
 
 # Set up Google Gemini API
@@ -55,7 +62,7 @@ def enhanced_record_and_transcribe(filename, current_question):
         formatted_topics = format_topics(topics[0] if topics else "")
 
         # Save session data
-        with open("session_history.txt", "a") as file:
+        with open("session/session_history.txt", "a") as file:
             file.write(f"Question: \"{current_question}\"\n")
             file.write(f"Answer: \"{transcription}\"\n")
             file.write(f"Topics: {formatted_topics}\n")
@@ -117,7 +124,7 @@ def conduct_interview():
     """Conducts an AI interview while recording video and keeping all functionalities intact."""
     
     # File path for session history
-    session_history_path = "session_history.txt"
+    session_history_path = "session/session_history.txt"
     with open(session_history_path, "w") as file:
         file.write("")  # Clear previous session history
 
@@ -180,7 +187,7 @@ def conduct_interview():
             time.sleep(1)
 
             # Record and transcribe response
-            audio_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}.wav")
+            audio_file = os.path.abspath(f"session/response_{selected_subdomain}_{i+1}.wav")
             transcription, topics, sentiment = enhanced_record_and_transcribe(audio_file, question)
 
             if transcription and not transcription.startswith("Transcription error"):
@@ -192,10 +199,10 @@ def conduct_interview():
             asked_questions.append(question)
 
         # Post-interview processing
-        convert_txt_to_csv(session_history_path, "session_history.csv")
+        convert_txt_to_csv(session_history_path, "session/session_history.csv")
         scoring.evaluate_answers_and_save()
         SER.sentiment()
-        gen_report.generate_report("evaluation_results.json", "emotion_predictions_multiple.json")
+        utils.gen_report.generate_report("evaluation_results.json", "emotion_predictions_multiple.json")
 
         print("Interview complete!")
 
@@ -208,7 +215,7 @@ def conduct_interview():
 #     """Conducts an AI interview while recording video and keeping all functionalities intact."""
     
 #     # File path for session history
-#     session_history_path = "session_history.txt"
+#     session_history_path = "session/session_history.txt"
 #     with open(session_history_path, "w") as file:
 #         file.write("")  # Clear previous session history
 
@@ -271,7 +278,7 @@ def conduct_interview():
 #             time.sleep(1)
 
 #             # Record and transcribe response
-#             audio_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}.wav")
+#             audio_file = os.path.abspath(f"session/response_{selected_subdomain}_{i+1}.wav")
 #             transcription, topics, sentiment = enhanced_record_and_transcribe(audio_file, question)
 
 #             if transcription and not transcription.startswith("Transcription error"):
@@ -290,7 +297,7 @@ def conduct_interview():
 #             asked_questions.append(question)
 
 #         # Post-interview processing
-#         convert_txt_to_csv(session_history_path, "session_history.csv")
+#         convert_txt_to_csv(session_history_path, "session/session_history.csv")
 #         scoring.evaluate_answers_and_save()
 #         SER.sentiment()
 #         gen_report.generate_report("evaluation_results.json", "emotion_predictions_multiple.json")
@@ -304,7 +311,7 @@ def conduct_interview():
 #version original
 # def conduct_interview():
 #     # File path for the session history
-#     session_history_path = "session_history.txt"
+#     session_history_path = "session/session_history.txt"
 
 #     # Open the file in write mode ('w') to overwrite old content or create a new one if it doesn't exist
 #     with open(session_history_path, "w") as file:
@@ -371,7 +378,7 @@ def conduct_interview():
 #         print("You have 10 seconds to understand the question...")
 #         time.sleep(1)
 
-#         audio_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}.wav")
+#         audio_file = os.path.abspath(f"session/response_{selected_subdomain}_{i+1}.wav")
 #         transcription, topics, sentiment = enhanced_record_and_transcribe(audio_file, question)
 
 #         if transcription and not transcription.startswith("Transcription error"):
@@ -382,7 +389,7 @@ def conduct_interview():
 
 #         # Add the asked question to the list
 #         asked_questions.append(question)
-#     convert_txt_to_csv(session_history_path, "session_history.csv")
+#     convert_txt_to_csv(session_history_path, "session/session_history.csv")
 #     scoring.evaluate_answers_and_save()
 #     SER.sentiment()
 #     gen_report.generate_report("evaluation_results.json", "emotion_predictions_multiple.json")

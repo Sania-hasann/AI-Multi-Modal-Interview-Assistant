@@ -1,14 +1,17 @@
 import os
 import requests
 import json
+import dotenv
 
-API_URL = "https://api-inference.huggingface.co/models/firdhokk/speech-emotion-recognition-with-openai-whisper-large-v3"
-headers = {"Authorization": "Bearer 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"}
+dotenv.load_dotenv()
+HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/firdhokk/speech-emotion-recognition-with-openai-whisper-large-v3"
+HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
+headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
 
 def query(filename):
     with open(filename, "rb") as f:
         data = f.read()
-    response = requests.post(API_URL, headers=headers, data=data)
+    response = requests.post(HUGGINGFACE_API_URL, headers=headers, data=data)
 
     # Check if the response was successful
     if response.status_code == 200:
@@ -47,7 +50,12 @@ def get_wav_files_from_directory(directory):
 
 # Specify the directory containing .wav files
 def sentiment():
-    directory_path = r"C:\Users\LENOVO\Documents\FYP\audio-llm-SER-video"
+    directory_path = r"session/audio"
+    # Check if the directory exists
+    if not os.path.exists(directory_path):
+        #make the directory
+        os.makedirs(directory_path)
+        print(f"Directory {directory_path} created.")
 
     # Get list of .wav files from the directory
     file_list = get_wav_files_from_directory(directory_path)
