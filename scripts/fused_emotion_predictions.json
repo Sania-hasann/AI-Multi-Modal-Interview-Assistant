@@ -1,0 +1,173 @@
+[
+    {
+        "filename": "C:\\Users\\uarif\\OneDrive\\Documents\\Semester 8\\cutsomfyp2\\scripts\\response_Computer Vision_1.wav",
+        "dominant_emotion": "neutral",
+        "segments": [
+            {
+                "start_time_sec": 0.0,
+                "end_time_sec": 3.0,
+                "dominant_emotion": "fear",
+                "confidence": 43.985041143410285,
+                "fused_predictions": {
+                    "happy": 0.9079445541337859,
+                    "fearful": 0.00015615305746905506,
+                    "sad": 6.129735563892388,
+                    "disgust": 3.3976994650866395e-08,
+                    "surprise": 0.07862122797069772,
+                    "neutral": 18.50329521171342,
+                    "angry": 0.6951384350680003,
+                    "fear": 43.985041143410285
+                },
+                "source": "SER+FER"
+            },
+            {
+                "start_time_sec": 3.0,
+                "end_time_sec": 6.0,
+                "dominant_emotion": "fear",
+                "confidence": 32.95235552345473,
+                "fused_predictions": {
+                    "happy": 8.123605665019506,
+                    "fearful": 0.00010916021419689059,
+                    "sad": 2.225713074812624,
+                    "disgust": 2.2127269117103955e-11,
+                    "surprise": 0.2460205326242814,
+                    "neutral": 24.388461014962065,
+                    "angry": 2.363632299721949,
+                    "fear": 32.95235552345473
+                },
+                "source": "SER+FER"
+            },
+            {
+                "start_time_sec": 6.0,
+                "end_time_sec": 9.0,
+                "dominant_emotion": "neutral",
+                "confidence": 35.7850914823293,
+                "fused_predictions": {
+                    "surprised": 0.05386699140071869,
+                    "disgust": 6.042391685610697e-12,
+                    "surprise": 0.01572058320249669,
+                    "fear": 32.03219012529385,
+                    "happy": 0.13709565646602048,
+                    "angry": 0.190507798601311,
+                    "fearful": 0.06801078021526337,
+                    "sad": 2.0170960080783917,
+                    "neutral": 35.7850914823293
+                },
+                "source": "SER+FER"
+            },
+            {
+                "start_time_sec": 9.0,
+                "end_time_sec": 12.0,
+                "dominant_emotion": "neutral",
+                "confidence": 40.63073189000621,
+                "fused_predictions": {
+                    "happy": 0.09761936763841224,
+                    "fearful": 0.00015636913594789802,
+                    "sad": 23.899149697014686,
+                    "disgust": 2.0139646191690758e-05,
+                    "surprise": 0.00033660379921679424,
+                    "neutral": 40.63073189000621,
+                    "angry": 1.0903852333663302,
+                    "fear": 4.581517559751128
+                },
+                "source": "SER+FER"
+            },
+            {
+                "start_time_sec": 12.0,
+                "end_time_sec": 15.0,
+                "dominant_emotion": "neutral",
+                "confidence": 28.390678555436743,
+                "fused_predictions": {
+                    "surprised": 3.3692502620397134e-05,
+                    "disgust": 0.0011538250885576684,
+                    "surprise": 0.8688926871062972,
+                    "fear": 13.32094117532481,
+                    "happy": 19.155993514843225,
+                    "angry": 0.7304392846192267,
+                    "fearful": 0.29680894017219545,
+                    "sad": 7.535008327641279,
+                    "neutral": 28.390678555436743
+                },
+                "source": "SER+FER"
+            },
+            {
+                "start_time_sec": 15.0,
+                "end_time_sec": 18.0,
+                "dominant_emotion": "neutral",
+                "confidence": 49.831247324490946,
+                "fused_predictions": {
+                    "surprised": 4.3544292566366494e-05,
+                    "disgust": 6.340783061080672e-05,
+                    "surprise": 0.0174944040730328,
+                    "fear": 11.748490655171647,
+                    "happy": 0.6940008623953728,
+                    "angry": 0.8157408512603761,
+                    "fearful": 0.0004632674041204154,
+                    "sad": 7.192380824501331,
+                    "neutral": 49.831247324490946
+                },
+                "source": "SER+FER"
+            },
+            {
+                "start_time_sec": 18.0,
+                "end_time_sec": 21.0,
+                "dominant_emotion": "neutral",
+                "confidence": 38.526471038153794,
+                "fused_predictions": {
+                    "surprised": 2.7200952172279357e-05,
+                    "disgust": 2.522812918728009e-05,
+                    "surprise": 0.0070834195632233,
+                    "fear": 24.61550966269498,
+                    "happy": 0.5483578602075185,
+                    "angry": 1.484589319846914,
+                    "fearful": 5.461532418848947e-05,
+                    "sad": 5.11785194164876,
+                    "neutral": 38.526471038153794
+                },
+                "source": "SER+FER"
+            },
+            {
+                "start_time_sec": 21.0,
+                "end_time_sec": 24.0,
+                "dominant_emotion": "neutral",
+                "confidence": 42.642969418631424,
+                "fused_predictions": {
+                    "surprised": 0.00032688552746549247,
+                    "disgust": 1.5082135004668258e-10,
+                    "surprise": 0.0012728675505478944,
+                    "fear": 23.35359981616679,
+                    "happy": 0.020564637189877027,
+                    "angry": 0.11481422418057025,
+                    "fearful": 0.29880128502845765,
+                    "sad": 3.867579364593312,
+                    "neutral": 42.642969418631424
+                },
+                "source": "SER+FER"
+            },
+            {
+                "start_time_sec": 24.0,
+                "end_time_sec": 27.0,
+                "dominant_emotion": "neutral",
+                "confidence": 40.92663713911864,
+                "fused_predictions": {
+                    "happy": 1.6652073543074315,
+                    "fearful": 0.00016408092342317103,
+                    "sad": 12.743952519682493,
+                    "disgust": 0.0001261643834509141,
+                    "surprise": 0.7306822232694814,
+                    "neutral": 40.92663713911864,
+                    "angry": 0.7704176487087047,
+                    "fear": 13.462732743007964
+                },
+                "source": "SER+FER"
+            },
+            {
+                "start_time_sec": 27.0,
+                "end_time_sec": 27.005,
+                "dominant_emotion": "sad",
+                "confidence": 0.9952274560928345,
+                "source": "SER_only"
+            }
+        ]
+    }
+]

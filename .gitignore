@@ -1,0 +1,9 @@
+venv/
+scripts/domains/
+scripts/*.mp4
+scripts/*.wav
+tokenizers/
+scripts/*.ini
+/scripts/*.txt
+/scripts/*.csv
+/scripts/__pycache__/
