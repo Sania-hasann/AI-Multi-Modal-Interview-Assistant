@@ -4,7 +4,9 @@ import json
 from pydub import AudioSegment
 
 API_URL = "https://api-inference.huggingface.co/models/firdhokk/speech-emotion-recognition-with-openai-whisper-large-v3"
-headers = {"Authorization": "Bearer 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"}
+token = os.getenv("HF_TOKEN")
+headers = {"Authorization": f"Bearer {token}"}
+
 
 def query(filename):
     with open(filename, "rb") as f:
