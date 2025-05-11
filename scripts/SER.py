@@ -3,6 +3,7 @@ import requests
 import json
 from pydub import AudioSegment
 
+
 API_URL = "https://api-inference.huggingface.co/models/firdhokk/speech-emotion-recognition-with-openai-whisper-large-v3"
 token = os.getenv("HF_TOKEN")
 headers = {"Authorization": f"Bearer {token}"}
@@ -12,10 +13,7 @@ def query(filename):
     with open(filename, "rb") as f:
         data = f.read()
     
-    # Specify content type based on file extension
-    content_type = "audio/wav" if filename.lower().endswith('.wav') else "audio/wav"
-    
-    # Add Content-Type header
+    content_type = "audio/wav"
     request_headers = headers.copy()
     request_headers["Content-Type"] = content_type
     
@@ -32,74 +30,62 @@ def query(filename):
 
 
 def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
-    """
-    Segment audio into chunks with timestamps.
-    
-    Args:
-        audio_path: Path to the audio file
-        chunk_duration_ms: Duration of each chunk in milliseconds
-        min_segment_ms: Minimum segment duration in milliseconds
-    """
     audio = AudioSegment.from_wav(audio_path)
     segments = []
     
-    # Calculate number of full segments
     num_segments = len(audio) // chunk_duration_ms
     remaining_ms = len(audio) % chunk_duration_ms
-    
-    # Process full segments
+
+    last_segment = None
+
     for i in range(num_segments):
         start_ms = i * chunk_duration_ms
         end_ms = start_ms + chunk_duration_ms
         segment = audio[start_ms:end_ms]
+        last_segment = segment
         
         seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{i}.wav"
         segment.export(seg_path, format="wav")
-        segments.append((seg_path, start_ms/1000, end_ms/1000))  # (path, start_sec, end_sec)
+        segments.append((seg_path, start_ms / 1000, end_ms / 1000))
     
-    # Handle remaining audio
+    # Handle remaining audio (< chunk_duration_ms)
     if remaining_ms > 0:
-        if remaining_ms >= min_segment_ms:
-            # If remaining segment is long enough, process it as is
-            start_ms = num_segments * chunk_duration_ms
-            end_ms = len(audio)
-            segment = audio[start_ms:end_ms]
-            
-            seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments}.wav"
-            segment.export(seg_path, format="wav")
-            segments.append((seg_path, start_ms/1000, end_ms/1000))
-        elif num_segments > 0:
-            # If remaining segment is too short, combine with part of the previous segment
-            start_ms = (num_segments - 1) * chunk_duration_ms + chunk_duration_ms - (min_segment_ms - remaining_ms)
-            end_ms = len(audio)
-            
-            # Remove the last segment we added and replace with a longer one
+        start_ms = num_segments * chunk_duration_ms
+        end_ms = len(audio)
+        segment = audio[start_ms:end_ms]
+
+        if len(segment) < min_segment_ms:
             if segments:
-                last_path, _, _ = segments.pop()
+                # Merge with previous segment
+                last_path, last_start, last_end = segments.pop()
+                last_audio = AudioSegment.from_wav(last_path)
+                merged_audio = last_audio + segment
+                merged_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments-1}_merged.wav"
+                merged_audio.export(merged_path, format="wav")
+
+                # Replace the previous segment with merged one
                 if os.path.exists(last_path):
                     os.remove(last_path)
-            
-            segment = audio[start_ms:end_ms]
-            seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments-1}_extended.wav"
+                
+                segments.append((merged_path, last_start, end_ms / 1000))
+        else:
+            seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments}.wav"
             segment.export(seg_path, format="wav")
-            segments.append((seg_path, start_ms/1000, end_ms/1000))
-            
+            segments.append((seg_path, start_ms / 1000, end_ms / 1000))
+    
     return segments
 
 
 def process_audio_segments(segments):
-    """Process audio segments and return emotions with timestamps."""
     all_results = []
     for seg_path, start_sec, end_sec in segments:
         try:
             if not os.path.exists(seg_path):
                 print(f"Segment does not exist: {seg_path}")
                 continue
-                
             if os.path.getsize(seg_path) == 0:
                 print(f"Empty segment file: {seg_path}")
-                if os.path.exists(seg_path):
-                    os.remove(seg_path)  # Clean up empty file
+                os.remove(seg_path)
                 continue
             
             output = query(seg_path)
@@ -123,13 +109,12 @@ def process_audio_segments(segments):
             print(f"Unexpected error processing segment {seg_path}: {str(e)}")
         finally:
             if os.path.exists(seg_path):
-                os.remove(seg_path)  # Clean up
+                os.remove(seg_path)
     
     return all_results
 
 
 def get_response_wav_files(directory):
-    """Get WAV files starting with 'response_'."""
     wav_files = []
     for filename in os.listdir(directory):
         if filename.startswith('response_') and filename.endswith('.wav'):
@@ -165,11 +150,9 @@ def emotion_detection_ser():
         except Exception as e:
             print(f"Error processing file {audio_file}: {str(e)}")
     
-    # Save results to JSON
     if all_file_results:
         with open("emotion_predictions_ser_multiple.json", "w") as json_file:
             json.dump(all_file_results, json_file, indent=4)
         print("JSON data saved to 'emotion_predictions_ser_multiple.json'.")
     else:
         print("No results to save.")
-
