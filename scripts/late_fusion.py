@@ -121,7 +121,7 @@ def aggregate_fused_emotions(fused_results):
         })
     return aggregated
 
-def main():
+def fusion():
     # Load JSON files
     ser_data = load_json("emotion_predictions_ser_multiple.json")
     fer_data = load_json("emotion_predictions_fer_multiple.json")
@@ -138,4 +138,4 @@ def main():
     print("✅ Fused emotion predictions saved to 'fused_emotion_predictions.json'.")
 
 if __name__ == "__main__":
-    main()
+    fusion()

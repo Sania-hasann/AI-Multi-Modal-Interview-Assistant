@@ -1,0 +1,213 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Interview Report</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f0f2f5;
+                color: #333;
+            }
+            .container {
+                max-width: 900px;
+                margin: 40px auto;
+                background: #ffffff;
+                border-radius: 15px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                overflow: hidden;
+            }
+            .header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #e0e0e0;
+                padding-bottom: 20px;
+            }
+            .header .logo {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                background: #ddd;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2em;
+                color: #666;
+            }
+            .header .details {
+                text-align: right;
+            }
+            .header .details strong {
+                font-size: 1.5em;
+                color: #2c3e50;
+            }
+            .header .details .score {
+                font-size: 1.2em;
+                color: #27ae60;
+                margin-top: 10px;
+            }
+            .chart-container {
+                margin: 30px 0;
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .questions {
+                margin-top: 40px;
+            }
+            .questions h3 {
+                color: #2c3e50;
+                border-bottom: 2px solid #3498db;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+            .table-container {
+                overflow-x: auto;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                background: #fff;
+            }
+            th, td {
+                padding: 15px;
+                text-align: left;
+                border-bottom: 1px solid #ecf0f1;
+            }
+            th {
+                background: #3498db;
+                color: #fff;
+                font-weight: 600;
+            }
+            td {
+                vertical-align: top;
+                font-size: 0.95em;
+            }
+            tr:nth-child(even) {
+                background: #f9f9f9;
+            }
+            .emotion {
+                font-weight: bold;
+                color: #e74c3c;
+            }
+            .confidence {
+                color: #7f8c8d;
+                font-style: italic;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="logo">Logo</div>
+                <div class="details">
+                    <strong>Interview Report</strong><br>
+                    Date: May 10, 2025<br>
+                    <span class="score">Cumulative AI Score: 58%</span>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h4>Emotion Distribution</h4>
+                <canvas id="barChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4>Performance Scores</h4>
+                <canvas id="stackedBarChart"></canvas>
+            </div>
+            <div class="questions">
+                <h3>Question Responses</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Answer</th>
+                                <th>Feedback</th>
+                                <th>Emotion</th>
+                                <th>Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script>
+            const data = {"questions": [{"question": "Can you describe a situation where you had to choose between different data science modeling techniques (e.g., linear regression, random forest, neural network) for a specific project, outlining the factors you considered in making your decision and justifying your chosen approach?", "answer": " I did not find the purpose of this.", "feedback": "Here is the evaluation:\n\nAccuracy Score: 3/10\nClarity Score: 2/10\nPreciseness Score: 1/10\nFeedback: The response lacks specific context and details about the situation, making it difficult to assess the accuracy of the answer. The answer is essentially a statement that the candidate could not find the purpose of the question, which fails to provide any relevant information.", "emotion": "Unknown", "emotion_confidence": 0}], "stackedBarChartData": {"labels": ["Q1"], "datasets": [{"label": "Accuracy", "data": [3]}, {"label": "Preciseness", "data": [2]}, {"label": "Clarity", "data": [1]}]}, "barChartData": {"labels": [], "scores": [], "colors": []}};
+
+            // Populate Questions Table
+            const tableBody = document.querySelector('.table-container tbody');
+            tableBody.innerHTML = '';
+            data.questions.forEach((item) => {
+                const feedbackText = item.feedback.split("Feedback:")[1]?.trim() || "None";
+                const row = `<tr>
+                    <td>${item.question}</td>
+                    <td>${item.answer}</td>
+                    <td>${feedbackText}</td>
+                    <td class="emotion">${item.emotion}</td>
+                    <td class="confidence">${item.emotion_confidence.toFixed(2)}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+
+            // Bar Chart for Emotions
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.barChartData.labels,
+                    datasets: [{
+                        label: 'Emotion Confidence',
+                        data: data.barChartData.scores,
+                        backgroundColor: data.barChartData.colors,
+                        borderColor: data.barChartData.colors,
+                        borderWidth: 1,
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: true, title: { display: true, text: 'Confidence' } } },
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            color: '#fff',
+                            font: { weight: 'bold' },
+                            formatter: (value, ctx) => data.barChartData.labels[ctx.dataIndex]
+                        }
+                    }
+                }
+            });
+
+            // Stacked Bar Chart for Scores
+            const stackedCtx = document.getElementById('stackedBarChart').getContext('2d');
+            new Chart(stackedCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.stackedBarChartData.labels,
+                    datasets: data.stackedBarChartData.datasets.map((dataset, index) => ({
+                        ...dataset,
+                        backgroundColor: ['#6ce5e8', '#41b8d5', '#2d8bba'][index],
+                        borderRadius: 10
+                    }))
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: { legend: { position: 'top' } },
+                    scales: { x: { stacked: true, beginAtZero: true, title: { display: true, text: 'Score' } }, y: { stacked: true } }
+                }
+            });
+        </script>
+    </body>
+    </html>
+    

@@ -30,49 +30,103 @@ def query(filename):
         print(f"Exception: {str(e)}")
         return None
 
-def segment_audio(audio_path, chunk_duration_ms=3000):
-    """Segment audio into chunks with timestamps."""
+
+def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
+    """
+    Segment audio into chunks with timestamps.
+    
+    Args:
+        audio_path: Path to the audio file
+        chunk_duration_ms: Duration of each chunk in milliseconds
+        min_segment_ms: Minimum segment duration in milliseconds
+    """
     audio = AudioSegment.from_wav(audio_path)
     segments = []
-    for i in range(0, len(audio), chunk_duration_ms):
-        start_ms = i
-        end_ms = min(i + chunk_duration_ms, len(audio))
+    
+    # Calculate number of full segments
+    num_segments = len(audio) // chunk_duration_ms
+    remaining_ms = len(audio) % chunk_duration_ms
+    
+    # Process full segments
+    for i in range(num_segments):
+        start_ms = i * chunk_duration_ms
+        end_ms = start_ms + chunk_duration_ms
         segment = audio[start_ms:end_ms]
-        seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{i//1000}.wav"
+        
+        seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{i}.wav"
         segment.export(seg_path, format="wav")
         segments.append((seg_path, start_ms/1000, end_ms/1000))  # (path, start_sec, end_sec)
+    
+    # Handle remaining audio
+    if remaining_ms > 0:
+        if remaining_ms >= min_segment_ms:
+            # If remaining segment is long enough, process it as is
+            start_ms = num_segments * chunk_duration_ms
+            end_ms = len(audio)
+            segment = audio[start_ms:end_ms]
+            
+            seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments}.wav"
+            segment.export(seg_path, format="wav")
+            segments.append((seg_path, start_ms/1000, end_ms/1000))
+        elif num_segments > 0:
+            # If remaining segment is too short, combine with part of the previous segment
+            start_ms = (num_segments - 1) * chunk_duration_ms + chunk_duration_ms - (min_segment_ms - remaining_ms)
+            end_ms = len(audio)
+            
+            # Remove the last segment we added and replace with a longer one
+            if segments:
+                last_path, _, _ = segments.pop()
+                if os.path.exists(last_path):
+                    os.remove(last_path)
+            
+            segment = audio[start_ms:end_ms]
+            seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments-1}_extended.wav"
+            segment.export(seg_path, format="wav")
+            segments.append((seg_path, start_ms/1000, end_ms/1000))
+            
     return segments
+
 
 def process_audio_segments(segments):
     """Process audio segments and return emotions with timestamps."""
     all_results = []
     for seg_path, start_sec, end_sec in segments:
-        if not os.path.exists(seg_path) or os.path.getsize(seg_path) == 0:
-            print(f"Invalid segment: {seg_path}")
-            continue
-        
-        output = query(seg_path)
-        if output:
-            try:
-                dominant_emotion = sorted(output, key=lambda x: x['score'], reverse=True)[0]
-                result_json = {
-                    'segment_filename': seg_path,
-                    'start_time_sec': start_sec,
-                    'end_time_sec': end_sec,
-                    'dominant_emotion': dominant_emotion['label'],
-                    'confidence': dominant_emotion['score'],
-                    'all_predictions': output
-                }
-                all_results.append(result_json)
-            except (KeyError, IndexError, TypeError) as e:
-                print(f"Error processing {seg_path}: {e}, Output: {output}")
-            finally:
+        try:
+            if not os.path.exists(seg_path):
+                print(f"Segment does not exist: {seg_path}")
+                continue
+                
+            if os.path.getsize(seg_path) == 0:
+                print(f"Empty segment file: {seg_path}")
                 if os.path.exists(seg_path):
-                    os.remove(seg_path)  # Clean up
-        else:
-            print(f"Error processing {seg_path}")
+                    os.remove(seg_path)  # Clean up empty file
+                continue
+            
+            output = query(seg_path)
+            if output:
+                try:
+                    dominant_emotion = sorted(output, key=lambda x: x['score'], reverse=True)[0]
+                    result_json = {
+                        'segment_filename': seg_path,
+                        'start_time_sec': start_sec,
+                        'end_time_sec': end_sec,
+                        'dominant_emotion': dominant_emotion['label'],
+                        'confidence': dominant_emotion['score'],
+                        'all_predictions': output
+                    }
+                    all_results.append(result_json)
+                except (KeyError, IndexError, TypeError) as e:
+                    print(f"Error processing predictions for {seg_path}: {e}, Output: {output}")
+            else:
+                print(f"No valid output for segment: {seg_path}")
+        except Exception as e:
+            print(f"Unexpected error processing segment {seg_path}: {str(e)}")
+        finally:
+            if os.path.exists(seg_path):
+                os.remove(seg_path)  # Clean up
     
     return all_results
+
 
 def get_response_wav_files(directory):
     """Get WAV files starting with 'response_'."""
@@ -83,6 +137,7 @@ def get_response_wav_files(directory):
             if os.path.isfile(full_path) and os.path.getsize(full_path) > 0:
                 wav_files.append(full_path)
     return wav_files
+
 
 def emotion_detection_ser():
     directory_path = r"C:\Users\uarif\OneDrive\Documents\Semester 8\cutsomfyp2\scripts"
@@ -96,22 +151,25 @@ def emotion_detection_ser():
     
     all_file_results = []
     for audio_file in file_list:
-        print(f"Processing file: {audio_file}")
-        segments = segment_audio(audio_file)
-        segment_results = process_audio_segments(segments)
-        if segment_results:
-            all_file_results.append({
-                'filename': audio_file,
-                'segments': segment_results
-            })
+        try:
+            print(f"Processing file: {audio_file}")
+            segments = segment_audio(audio_file)
+            segment_results = process_audio_segments(segments)
+            if segment_results:
+                all_file_results.append({
+                    'filename': audio_file,
+                    'segments': segment_results
+                })
+            else:
+                print(f"No valid results for file: {audio_file}")
+        except Exception as e:
+            print(f"Error processing file {audio_file}: {str(e)}")
     
     # Save results to JSON
     if all_file_results:
         with open("emotion_predictions_ser_multiple.json", "w") as json_file:
             json.dump(all_file_results, json_file, indent=4)
-        print("JSON data saved to 'emotion_predictions_multiple.json'.")
+        print("JSON data saved to 'emotion_predictions_ser_multiple.json'.")
     else:
         print("No results to save.")
 
-if __name__ == "__main__":
-    emotion_detection_ser()

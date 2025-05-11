@@ -11,9 +11,13 @@ from transformers import pipeline
 from recording_transcription import record_and_transcribe
 from config_loader import load_domain_config, get_subdomains
 from context_awareness import parse_transcription, extract_topics, sentiment_score
+from FER import emotion_detection_fer
+from SER import emotion_detection_ser
+from late_fusion import fusion
+from report import generate_report
 from txt_to_csv import convert_txt_to_csv
 import scoring
-import SER
+
 import report_generation
 
 # Set up Google Gemini API
@@ -211,8 +215,10 @@ def conduct_interview():
 
     convert_txt_to_csv(session_history_path, "session_history.csv")
     scoring.evaluate_answers_and_save()
-    #SER.sentiment()
-    #report_generation.generate_report("evaluation_results.json", "emotion_predictions_multiple.json", question_sentiments)
-
+    emotion_detection_ser()
+    emotion_detection_fer()
+    fusion()
+    generate_report("evaluation_results.json", "fused_emotion_predictions.json")
+    
 if __name__ == "__main__":
     conduct_interview()

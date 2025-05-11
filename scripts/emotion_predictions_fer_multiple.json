@@ -1,135 +1,57 @@
 [
     {
-        "filename": "C:\\Users\\uarif\\OneDrive\\Documents\\Semester 8\\cutsomfyp2\\scripts\\response_Computer Vision_1_with_audio_with_audio.mp4",
+        "filename": "C:\\Users\\uarif\\OneDrive\\Documents\\Semester 8\\cutsomfyp2\\scripts\\response_Data Science_1_with_audio_with_audio.mp4",
         "segments": [
             {
                 "start_time_sec": 0.0,
                 "end_time_sec": 3.0,
                 "dominant_emotion": "fearful",
-                "confidence": 80.7845186597967,
+                "confidence": 88.05099042142832,
                 "all_predictions": {
-                    "angry": 0.992975948795354,
-                    "fearful": 62.835773062014695,
-                    "happy": 1.2969892797404277,
-                    "sad": 8.32934639950347,
-                    "neutral": 26.432598045958123
+                    "angry": 0.021794573900891078,
+                    "fearful": 79.55343782353577,
+                    "happy": 0.00496669257804134,
+                    "sad": 5.2540001959584135,
+                    "neutral": 14.964091887977759
                 }
             },
             {
                 "start_time_sec": 3.0,
                 "end_time_sec": 6.0,
                 "dominant_emotion": "fearful",
-                "confidence": 87.77582430746672,
+                "confidence": 97.56359503313435,
                 "all_predictions": {
-                    "angry": 3.376504640065846,
-                    "fearful": 47.07479360493533,
-                    "happy": 11.602088891322028,
-                    "sad": 2.755452625253844,
-                    "neutral": 34.83970340129555
+                    "angry": 0.007526192421043358,
+                    "fearful": 97.56359503313435,
+                    "happy": 0.007073718418476902,
+                    "sad": 0.986033799349903,
+                    "neutral": 0.07443859296486659
                 }
             },
             {
                 "start_time_sec": 6.0,
                 "end_time_sec": 9.0,
-                "dominant_emotion": "neutral",
-                "confidence": 86.13744100883173,
+                "dominant_emotion": "fearful",
+                "confidence": 92.03224350546863,
                 "all_predictions": {
-                    "angry": 0.2721539980018729,
-                    "fearful": 45.76027160756265,
-                    "happy": 0.1950844626558442,
-                    "sad": 2.8801721832345257,
-                    "neutral": 50.86986107305109
+                    "angry": 0.04964067360799931,
+                    "fearful": 92.03224350546863,
+                    "happy": 0.031127030778840586,
+                    "sad": 1.8654008485065094,
+                    "neutral": 0.07060851994016915
                 }
             },
             {
                 "start_time_sec": 9.0,
-                "end_time_sec": 12.0,
-                "dominant_emotion": "neutral",
-                "confidence": 81.7349459281916,
+                "end_time_sec": 11.25,
+                "dominant_emotion": "fearful",
+                "confidence": 95.96394140349034,
                 "all_predictions": {
-                    "angry": 1.55749101308165,
-                    "fearful": 6.545025085358755,
-                    "happy": 0.13908518772245695,
-                    "sad": 34.141484466630466,
-                    "neutral": 57.61640476811974
-                }
-            },
-            {
-                "start_time_sec": 12.0,
-                "end_time_sec": 15.0,
-                "dominant_emotion": "happy",
-                "confidence": 74.00969611981783,
-                "all_predictions": {
-                    "angry": 1.043484692313181,
-                    "fearful": 19.02991596474973,
-                    "happy": 27.365705021204608,
-                    "sad": 10.762145297437822,
-                    "neutral": 40.555890723746714
-                }
-            },
-            {
-                "start_time_sec": 15.0,
-                "end_time_sec": 18.0,
-                "dominant_emotion": "neutral",
-                "confidence": 77.36009340161023,
-                "all_predictions": {
-                    "angry": 1.1653440732291087,
-                    "fearful": 16.78355807881664,
-                    "happy": 0.9914298034219612,
-                    "sad": 10.270801854456488,
-                    "neutral": 70.76384266890855
-                }
-            },
-            {
-                "start_time_sec": 18.0,
-                "end_time_sec": 21.0,
-                "dominant_emotion": "neutral",
-                "confidence": 79.3013362625339,
-                "all_predictions": {
-                    "angry": 2.1208418854955915,
-                    "fearful": 35.16501380384997,
-                    "happy": 0.7833683717250266,
-                    "sad": 7.310916079674423,
-                    "neutral": 54.60974187721955
-                }
-            },
-            {
-                "start_time_sec": 21.0,
-                "end_time_sec": 24.0,
-                "dominant_emotion": "neutral",
-                "confidence": 84.52111693591476,
-                "all_predictions": {
-                    "angry": 0.1639011205643554,
-                    "fearful": 33.36228545166684,
-                    "happy": 0.029378053128395757,
-                    "sad": 5.524910916611797,
-                    "neutral": 60.91770680597987
-                }
-            },
-            {
-                "start_time_sec": 24.0,
-                "end_time_sec": 27.0,
-                "dominant_emotion": "neutral",
-                "confidence": 75.83956156745418,
-                "all_predictions": {
-                    "angry": 1.1004807816444508,
-                    "fearful": 19.232475347154235,
-                    "happy": 2.3788676490106164,
-                    "sad": 18.200694417917937,
-                    "neutral": 58.04354667975354
-                }
-            },
-            {
-                "start_time_sec": 27.0,
-                "end_time_sec": 27.25,
-                "dominant_emotion": "happy",
-                "confidence": 63.1077143970034,
-                "all_predictions": {
-                    "angry": 0.041800030969486854,
-                    "fearful": 7.54985330599734,
-                    "happy": 63.1077143970034,
-                    "sad": 0.3613336791293431,
-                    "neutral": 2.9776824436308527
+                    "angry": 0.012914516703145827,
+                    "fearful": 95.96394140349034,
+                    "happy": 0.003956719373462805,
+                    "sad": 2.4720684863594276,
+                    "neutral": 1.0861123104062873
                 }
             }
         ]

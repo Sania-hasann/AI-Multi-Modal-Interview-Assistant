@@ -7,3 +7,4 @@ scripts/*.ini
 /scripts/*.txt
 /scripts/*.csv
 /scripts/__pycache__/
+/scripts/*.json

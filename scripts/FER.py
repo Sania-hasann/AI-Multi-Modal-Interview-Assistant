@@ -123,5 +123,3 @@ def emotion_detection_fer():
     else:
         print("No results to save.")
 
-if __name__ == "__main__":
-    emotion_detection_fer()

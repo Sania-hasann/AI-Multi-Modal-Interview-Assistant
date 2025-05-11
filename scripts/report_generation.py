@@ -52,7 +52,7 @@ def parse_emotion_json(json_file):
         }
     return emotion_data
 
-def generate_report(evaluation_json_file, emotion_json_file, question_sentiments):
+def generate_report(evaluation_json_file, emotion_json_file):
     evaluation_data = parse_evaluation_json(evaluation_json_file)
     emotion_data = parse_emotion_json(emotion_json_file)
 
@@ -64,12 +64,12 @@ def generate_report(evaluation_json_file, emotion_json_file, question_sentiments
 
     for i, q_data in enumerate(evaluation_data["questions"]):
         question_number = i + 1
-        sentiment = question_sentiments.get(f"Q{question_number}", "N/A")  # Get sentiment from the dictionary
+        #sentiment = question_sentiments.get(f"Q{question_number}", "N/A")  # Get sentiment from the dictionary
         report_data["questions"].append({
             "question": q_data["question"],
             "answer": q_data["answer"],
             "feedback": q_data["feedback"],
-            "sentiment": sentiment,
+            #"sentiment": sentiment,
             "dominant_emotion": emotion_data.get(f"Q{question_number}", {}).get("dominant_emotion", "N/A"),
             "emotion_confidence": emotion_data.get(f"Q{question_number}", {}).get("confidence", "N/A")
         })
@@ -252,4 +252,4 @@ def generate_report(evaluation_json_file, emotion_json_file, question_sentiments
         file.write(html_with_data)
 
 if __name__ == "__main__":
-    generate_report("evaluation_results.json", "emotion_predictions_multiple.json")
+    generate_report("evaluation_results.json", "fused_emotion_predictions.json")

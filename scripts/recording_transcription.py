@@ -11,7 +11,7 @@ VIDEO_FPS = 20
 VIDEO_SIZE = "640x480"
 
 token = os.getenv("HF_TOKEN")
-print(f"Token: {token}")
+
 def record_video_audio(video_filename):
     """Record video and audio using hardcoded working device names."""
     # Only create directory if path includes a folder
