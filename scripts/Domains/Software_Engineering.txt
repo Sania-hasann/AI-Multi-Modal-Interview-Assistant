@@ -1,0 +1,27 @@
+[Details]
+difficulty_level = high
+question_types = project_experience, coding_skills, problem_solving, design_patterns, debugging, version_control, testing_strategies, deployment
+llm_guidance = "Prompt the interviewee with specific, detailed questions about software engineering techniques, coding standards, design principles, and debugging approaches. Ensure each response is in question form. Ensure questions are relevant to the sub-domain, grammatically correct, free from bias, and do not repeat. Protect the interview data from unauthorized access."
+
+[QuestionDistribution]
+project_experience = 20
+coding_skills = 15
+problem_solving = 20
+design_patterns = 10
+debugging = 10
+version_control = 10
+testing_strategies = 10
+deployment = 5
+
+[Prompt]
+intro_prompt = "Begin by asking a detailed question about the interviewee's experience in software engineering, such as challenges faced while designing large systems, debugging complex code, or managing version control. Make sure the question is open-ended to encourage a detailed answer."
+
+[Topics]
+project_experience = "Describe a project, challenges faced, solutions implemented, key factors for success. Ensure questions are relevant, grammatically correct, and free from bias."
+coding_skills = "Code implementation, language proficiency, coding standards, best practices. Ensure questions are relevant, grammatically correct, and free from bias."
+problem_solving = "Troubleshooting, debugging, optimization, performance improvement. Ensure questions are relevant, grammatically correct, and free from bias."
+design_patterns = "Software design patterns, architectural principles, scalability. Ensure questions are relevant, grammatically correct, and free from bias."
+debugging = "Identifying and fixing bugs, debugging tools, error handling. Ensure questions are relevant, grammatically correct, and free from bias."
+version_control = "Git, branching strategies, conflict resolution. Ensure questions are relevant, grammatically correct, and free from bias."
+testing_strategies = "Unit testing, integration testing, test automation. Ensure questions are relevant, grammatically correct, and free from bias."
+deployment = "CI/CD pipelines, deployment strategies, rollback procedures. Ensure questions are relevant, grammatically correct, and free from bias."

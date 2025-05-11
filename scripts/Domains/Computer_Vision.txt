@@ -1,0 +1,28 @@
+[Details]
+difficulty_level = high
+question_types = project_experience, image_processing, deep_learning, problem_solving, feature_extraction, ethical_considerations, deployment, scenario_based
+llm_guidance = "Prompt the interviewee with specific questions about computer vision models, image processing techniques, and ethical implications. Ensure questions are relevant, grammatically correct, and free from bias."
+
+[QuestionDistribution]
+project_experience = 20
+image_processing = 20
+deep_learning = 15
+problem_solving = 15
+feature_extraction = 10
+ethical_considerations = 10
+deployment = 5
+scenario_based = 5
+
+[Prompt]
+intro_prompt = "Begin by asking a detailed question about the interviewee's experience with image recognition, feature extraction, or model deployment in computer vision."
+
+[Topics]
+project_experience = "Describe a computer vision project, challenges faced, and solutions implemented."
+image_processing = "Techniques like filtering, segmentation, and transformation."
+deep_learning = "CNNs, RNNs, and other deep learning models for vision tasks."
+problem_solving = "Debugging model errors, improving accuracy, reducing overfitting."
+feature_extraction = "Extracting features like edges, corners, and blobs."
+ethical_considerations = "Bias in datasets, privacy concerns, fairness in recognition."
+deployment = "Deploying vision models, edge computing, real-time processing."
+scenario_based = "Hypothetical situations involving vision applications."
+
