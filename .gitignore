@@ -6,3 +6,5 @@ tokenizers/
 /scripts/*.csv
 /scripts/__pycache__/
 /scripts/*.json
+*.env
+*.json

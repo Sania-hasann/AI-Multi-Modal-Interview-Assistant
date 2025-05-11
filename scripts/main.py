@@ -17,8 +17,10 @@ from late_fusion import fusion
 from report import generate_report
 from txt_to_csv import convert_txt_to_csv
 import scoring
-
+import dotenv
 import report_generation
+
+dotenv.load_dotenv()
 
 # Set up Google Gemini API
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -66,7 +68,7 @@ def enhanced_record_and_transcribe(video_filename, audio_filename, current_quest
         formatted_topics = format_topics(topics[0] if topics else "")
 
         # Save session data
-        with open("session_history.txt", "a") as file:
+        with open("session/session_history.txt", "a") as file:
             file.write(f"Question: \"{current_question}\"\n")
             file.write(f"Answer: \"{transcription}\"\n")
             file.write(f"Topics: {formatted_topics}\n")
@@ -128,7 +130,7 @@ def should_follow_up(response):
 # Main function to conduct the interview
 def conduct_interview():
     # File path for the session history
-    session_history_path = "session_history.txt"
+    session_history_path = "session/session_history.txt"
 
     # Open the file in write mode ('w') to overwrite old content or create a new one if it doesn't exist
     with open(session_history_path, "w") as file:
@@ -195,8 +197,8 @@ def conduct_interview():
         time.sleep(1)
 
         # Define video and audio file paths
-        video_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}_with_audio.mp4")
-        audio_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}.wav")
+        video_file = os.path.abspath(f"session/response_{selected_subdomain}_{i+1}_with_audio.mp4")
+        audio_file = os.path.abspath(f"session/response_{selected_subdomain}_{i+1}.wav")
         transcription, topics, sentiment, parsed_data = enhanced_record_and_transcribe(video_file, audio_file, question)
 
         question_sentiments = {}
@@ -218,7 +220,7 @@ def conduct_interview():
     emotion_detection_ser()
     emotion_detection_fer()
     fusion()
-    generate_report("evaluation_results.json", "fused_emotion_predictions.json")
-    
+    generate_report("session/evaluation_results.json", "session/fused_emotion_predictions.json")
+
 if __name__ == "__main__":
     conduct_interview()

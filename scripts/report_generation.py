@@ -252,4 +252,4 @@ def generate_report(evaluation_json_file, emotion_json_file):
         file.write(html_with_data)
 
 if __name__ == "__main__":
-    generate_report("evaluation_results.json", "fused_emotion_predictions.json")
+    generate_report("session/evaluation_results.json", "session/fused_emotion_predictions.json")

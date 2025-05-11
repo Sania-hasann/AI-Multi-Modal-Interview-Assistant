@@ -123,8 +123,8 @@ def aggregate_fused_emotions(fused_results):
 
 def fusion():
     # Load JSON files
-    ser_data = load_json("emotion_predictions_ser_multiple.json")
-    fer_data = load_json("emotion_predictions_fer_multiple.json")
+    ser_data = load_json("session/emotion_predictions_ser_multiple.json")
+    fer_data = load_json("session/emotion_predictions_fer_multiple.json")
 
     # Perform late fusion
     fused_results = late_fusion(ser_data, fer_data, ser_weight=0.3, fer_weight=0.7)
@@ -133,9 +133,9 @@ def fusion():
     aggregated_results = aggregate_fused_emotions(fused_results)
 
     # Save results
-    with open("fused_emotion_predictions.json", "w") as f:
+    with open("session/fused_emotion_predictions.json", "w") as f:
         json.dump(aggregated_results, f, indent=4)
-    print("✅ Fused emotion predictions saved to 'fused_emotion_predictions.json'.")
+    print("✅ Fused emotion predictions saved to 'session/fused_emotion_predictions.json'.")
 
 if __name__ == "__main__":
     fusion()

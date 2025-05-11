@@ -228,8 +228,8 @@ def save_to_json(results, output_file):
 # Paths
 def evaluate_answers_and_save():
     """Evaluate the answers from session_history.csv and save the results."""
-    input_csv_file = 'session_history.csv'
-    output_json_file = 'evaluation_results.json'
+    input_csv_file = 'session/session_history.csv'
+    output_json_file = 'session/evaluation_results.json'
 
     try:
         print("Starting evaluation process...")

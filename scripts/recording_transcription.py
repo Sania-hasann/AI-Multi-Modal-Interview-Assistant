@@ -4,13 +4,15 @@ import signal
 import time
 from pydub import AudioSegment
 from transformers import pipeline
+import dotenv
 
+dotenv.load_dotenv()
 # Recording parameters
 RATE = 44100
 VIDEO_FPS = 20
 VIDEO_SIZE = "640x480"
 
-token = os.getenv("HF_TOKEN")
+token = os.getenv("HUGGINGFACE_API_KEY")
 
 def record_video_audio(video_filename):
     """Record video and audio using hardcoded working device names."""
@@ -20,8 +22,8 @@ def record_video_audio(video_filename):
         os.makedirs(video_dir, exist_ok=True)
 
     # Hardcoded device names (replace if needed)
-    raw_video_line = '"Integrated Camera" (video)'
-    raw_audio_line = '"Microphone Array (AMD Audio Device)" (audio)'
+    raw_video_line = '"HP Wide Vision HD Camera" (video)'
+    raw_audio_line = '"Microphone Array (Realtek High Definition Audio)" (audio)'
 
     def extract_device_name(raw_line):
         start = raw_line.find('"') + 1

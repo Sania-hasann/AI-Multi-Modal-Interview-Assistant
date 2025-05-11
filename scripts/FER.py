@@ -95,7 +95,7 @@ def get_response_video_files(directory):
     return video_files
 
 def emotion_detection_fer():
-    directory_path = r"C:\Users\uarif\OneDrive\Documents\Semester 8\cutsomfyp2\scripts"
+    directory_path = r"session"
     file_list = get_response_video_files(directory_path)
 
     if not file_list:
@@ -117,9 +117,9 @@ def emotion_detection_fer():
 
     # Save results to JSON
     if all_file_results:
-        with open("emotion_predictions_fer_multiple.json", "w") as json_file:
+        with open("session/emotion_predictions_fer_multiple.json", "w") as json_file:
             json.dump(all_file_results, json_file, indent=4)
-        print("JSON data saved to 'emotion_predictions_fer_multiple.json'.")
+        print("JSON data saved to 'session/emotion_predictions_fer_multiple.json'.")
     else:
         print("No results to save.")
 

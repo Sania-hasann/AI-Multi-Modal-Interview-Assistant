@@ -2,10 +2,11 @@ import os
 import requests
 import json
 from pydub import AudioSegment
-
+import dotenv
+dotenv.load_dotenv()
 
 API_URL = "https://api-inference.huggingface.co/models/firdhokk/speech-emotion-recognition-with-openai-whisper-large-v3"
-token = os.getenv("HF_TOKEN")
+token = os.getenv("HUGGINGFACE_API_KEY")
 headers = {"Authorization": f"Bearer {token}"}
 
 
@@ -125,7 +126,7 @@ def get_response_wav_files(directory):
 
 
 def emotion_detection_ser():
-    directory_path = r"C:\Users\uarif\OneDrive\Documents\Semester 8\cutsomfyp2\scripts"
+    directory_path = r"session"
     file_list = get_response_wav_files(directory_path)
     
     if not file_list:
@@ -151,8 +152,8 @@ def emotion_detection_ser():
             print(f"Error processing file {audio_file}: {str(e)}")
     
     if all_file_results:
-        with open("emotion_predictions_ser_multiple.json", "w") as json_file:
+        with open("session/emotion_predictions_ser_multiple.json", "w") as json_file:
             json.dump(all_file_results, json_file, indent=4)
-        print("JSON data saved to 'emotion_predictions_ser_multiple.json'.")
+        print("JSON data saved to 'session/emotion_predictions_ser_multiple.json'.")
     else:
         print("No results to save.")
