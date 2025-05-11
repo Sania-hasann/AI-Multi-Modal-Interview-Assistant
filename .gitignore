@@ -8,3 +8,4 @@ tokenizers/
 /scripts/*.json
 *.env
 *.json
+get_device.py
