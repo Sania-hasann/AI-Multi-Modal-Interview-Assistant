@@ -1,24 +1,25 @@
 import os
 import time
 import random
+import json
 import google.generativeai as genai
 import re
 import pyttsx3
-import subprocess
-import signal
-from pydub import AudioSegment
-from transformers import pipeline
-from recording_transcription import record_and_transcribe
 from config_loader import load_domain_config, get_subdomains
 from context_awareness import parse_transcription, extract_topics, sentiment_score
+from recording_transcription import record_and_transcribe
 from FER import emotion_detection_fer
 from SER import emotion_detection_ser
 from late_fusion import fusion
 from report import generate_report
 from txt_to_csv import convert_txt_to_csv
 import scoring
+from resume_data import extract_resume_info, save_resume_data
 
-import report_generation
+# Video and audio recording parameters
+RATE = 44100
+VIDEO_FPS = 20
+VIDEO_SIZE = "640x480"
 
 # Set up Google Gemini API
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -34,7 +35,7 @@ model = genai.GenerativeModel(
     generation_config=generation_config
 )
 
-# Initialize the text-to-speech engine
+# Initialize text-to-speech engine
 engine = pyttsx3.init()
 
 def speak(text):
@@ -43,182 +44,289 @@ def speak(text):
     engine.runAndWait()
 
 def format_topics(topics):
-    # Extract words from the string of topics, assuming the format "0.059*'model' + 0.044*'speech' + ..."
+    """Extract words from topics string, e.g., "0.059*'model' + 0.044*'speech' + ..."""
     return ', '.join([word.split('*')[1].replace('"', '').strip() for word in topics.split('+')])
 
-# Video and audio recording parameters
-RATE = 44100
-VIDEO_FPS = 20
-VIDEO_SIZE = "640x480"
+def is_resume_relevant(resume_data, subdomain):
+    """Check if resume data is relevant to the selected subdomain."""
+    subdomain_keywords = {
+        "Algorithms and Data Structures": [
+            "algorithm", "data structure", "sorting", "searching", "graph", "tree",
+            "array", "linked list", "hash table", "recursion", "complexity", "time complexity"
+        ],
+        "Artificial Intelligence and Machine Learning": [
+            "machine learning", "deep learning", "neural network", "tensorflow", "pytorch",
+            "data science", "algorithm", "model", "training", "prediction", "ai", "artificial intelligence"
+        ],
+        "Computer Networks": [
+            "networking", "tcp/ip", "routing", "switching", "protocol", "lan", "wan",
+            "firewall", "dns", "http", "subnet", "osi model"
+        ],
+        "Computer Vision": [
+            "computer vision", "image processing", "opencv", "object detection", "face recognition",
+            "image classification", "feature extraction", "segmentation", "cnn", "deep vision"
+        ],
+        "Cybersecurity": [
+            "security", "encryption", "firewall", "penetration testing", "vulnerability",
+            "authentication", "cryptography", "malware", "network security", "ethical hacking"
+        ],
+        "Data Science": [
+            "data analysis", "statistics", "visualization", "pandas", "sql",
+            "big data", "hadoop", "spark", "r", "tableau", "data mining"
+        ],
+        "Databases": [
+            "database", "sql", "nosql", "mysql", "postgresql", "mongodb", "indexing",
+            "query optimization", "normalization", "transaction", "schema"
+        ],
+        "Embedded Systems": [
+            "embedded", "microcontroller", "raspberry pi", "arduino", "iot", "firmware",
+            "real-time", "hardware", "c", "assembly", "sensor"
+        ],
+        "Game Development": [
+            "game development", "unity", "unreal engine", "game design", "3d modeling",
+            "animation", "physics engine", "opengl", "c#", "gamedev"
+        ],
+        "Operating Systems": [
+            "operating system", "kernel", "process", "thread", "scheduler", "memory management",
+            "file system", "virtualization", "linux", "windows", "unix"
+        ],
+        "Software Engineering": [
+            "software development", "coding", "programming", "design pattern", "agile",
+            "scrum", "java", "python", "javascript", "api", "devops"
+        ],
+        "Theoretical Computer Science": [
+            "theory", "computability", "complexity", "turing machine", "automata",
+            "formal language", "logic", "proof", "np-complete", "algorithm design"
+        ]
+    }
+    
+    keywords = subdomain_keywords.get(subdomain, [])
+    if not keywords:
+        return False
+    
+    # Convert all items to strings, handling dictionaries
+    def to_string(item):
+        if isinstance(item, dict):
+            return " ".join(f"{k}: {v}" for k, v in item.items())
+        return str(item)
+    
+    # Combine resume data into a single text for checking
+    resume_text = " ".join(
+        to_string(item)
+        for category in [resume_data["projects"], resume_data["experiences"], resume_data["skills"]]
+        for item in category
+    ).lower()
+    
+    # Check for keyword matches
+    return any(keyword.lower() in resume_text for keyword in keywords)
 
 def enhanced_record_and_transcribe(video_filename, audio_filename, current_question):
-    """Record video/audio, extract audio, transcribe, and perform NLP tasks."""
-    # Record video and audio, then transcribe
-    transcription = record_and_transcribe(video_filename, audio_filename)
-    
-    if transcription and not transcription.startswith("Transcription error"):
-        # Perform NLP tasks
-        parsed_data = parse_transcription(transcription)
-        topics = extract_topics(transcription)
-        sentiment = sentiment_score(transcription)
+    """Record video/audio, transcribe, and perform NLP tasks."""
+    try:
+        transcription = record_and_transcribe(video_filename, audio_filename)
+        if transcription and not transcription.startswith("Transcription error"):
+            parsed_data = parse_transcription(transcription)
+            topics = extract_topics(transcription)
+            sentiment = sentiment_score(transcription)
+            formatted_topics = format_topics(topics[0] if topics else "")
+            
+            with open("session_history.txt", "a") as file:
+                file.write(f"Question: \"{current_question}\"\n")
+                file.write(f"Answer: \"{transcription}\"\n")
+                file.write(f"Topics: {formatted_topics}\n")
+                file.write(f"Sentiment: {sentiment}\n")
+                file.write(f"Video: {video_filename}\n")
+                file.write(f"Audio: {audio_filename}\n\n")
+            
+            return transcription, topics, sentiment, parsed_data
+        return transcription, None, None, None
+    except Exception as e:
+        print(f"Error in recording/transcription: {e}")
+        return "Transcription error", None, None, None
+    finally:
+        for file in [video_filename, audio_filename]:
+            if os.path.exists(file):
+                os.remove(file)
 
-        # Format topics for better readability
-        formatted_topics = format_topics(topics[0] if topics else "")
+def should_follow_up(response):
+    """Check if response is detailed enough for a follow-up."""
+    keywords = ['experience', 'approach', 'method', 'challenge', 'solution', 'details', 'job', 'internship',
+                'project', 'problem', 'implementation', 'design', 'optimization', 'tool', 'process', 'framework']
+    return any(re.search(rf"\b{kw}\b", response, re.IGNORECASE) for kw in keywords)
 
-        # Save session data
-        with open("session_history.txt", "a") as file:
-            file.write(f"Question: \"{current_question}\"\n")
-            file.write(f"Answer: \"{transcription}\"\n")
-            file.write(f"Topics: {formatted_topics}\n")
-            file.write(f"Sentiment: {sentiment}\n")
-            file.write(f"Video: {video_filename}\n")
-            file.write(f"Audio: {audio_filename}\n\n")
-
-        return transcription, topics, sentiment, parsed_data
-
-    return transcription, None, None, None
-
-# Function to generate interview questions
-def generate_questions(prompt, subdomain, domain_details, context=None, follow_up=False, question_type=None, asked_questions=[], topics=None):
+def generate_questions(prompt, subdomain, domain_details, context=None, follow_up=False, question_type=None, asked_questions=None, topics=None, resume_data=None):
+    """Generate interview questions with a mix of resume-based and subdomain-based prompts when relevant."""
     chat_session = model.start_chat(history=[])
-
-    # Determine prompt based on follow-up or new question
-    if follow_up and context:
-        full_prompt = f"Based on the candidate's response '{context}', generate a detailed follow-up question in {subdomain} to dive deeper. Please ensure your response is phrased as a question."
-    else:
-        full_prompt = f"{domain_details['llm_guidance']}\n{prompt}\nGenerate a new question specifically in question form to assess knowledge in {subdomain}."
-
-        if question_type:
-            full_prompt += f"\nThe question should be of type: {question_type}"
-            if topics and question_type in topics:
-                full_prompt += f"\nSpecific topics to cover: {topics[question_type]}"
-
-    response = chat_session.send_message(full_prompt)
     
-    if response.text:
-        # Split response by lines, removing any empty lines or comments
-        questions = [q.strip() for q in response.text.split('\n') if q.strip() and not q.startswith("#")]
-
-        # Ensure at least one line is phrased as a question
-        for question in questions:
-            if question.endswith('?') and question not in asked_questions:
-                return question  # Return the first valid question found
-
-        # Retry if no question is generated
-        retry_prompt = f"{full_prompt}\nPlease make sure the response is a direct question."
-        response = chat_session.send_message(retry_prompt)
-
-        # Recheck the response for a question
+    # Ensure asked_questions is a list
+    if asked_questions is None:
+        asked_questions = []
+    
+    # Check if resume data is relevant to the subdomain
+    use_resume = resume_data and is_resume_relevant(resume_data, subdomain)
+    
+    # Prepare resume data prompt
+    resume_prompt = ""
+    if use_resume:
+        # Since resume_data.py now guarantees strings, no need for to_string conversion
+        projects = ", ".join(resume_data['projects']) if resume_data['projects'] else "None"
+        experiences = ", ".join(resume_data['experiences']) if resume_data['experiences'] else "None"
+        skills = ", ".join(resume_data['skills']) if resume_data['skills'] else "None"
+        resume_prompt = (
+            f"Candidate's resume details:\n"
+            f"Projects (prioritize for questions): {projects}\n"
+            f"Experiences (prioritize for questions): {experiences}\n"
+            f"Skills: {skills}\n"
+        )
+    
+    # Define weights: 70% resume-based, 30% subdomain-based when relevant
+    if use_resume:
+        question_source = random.choices(
+            ['resume', 'subdomain'],
+            weights=[0.7, 0.3],  # 70% resume, 30% subdomain
+            k=1
+        )[0]
+    else:
+        question_source = 'subdomain'
+    
+    # Construct prompt based on question source and context
+    if follow_up and context:
+        if question_source == 'resume':
+            full_prompt = (
+                f"{resume_prompt}\n"
+                f"Based on the candidate's response '{context}', generate a detailed follow-up question in {subdomain}. "
+                f"Focus on the candidate's projects and experiences from the resume, relating them to the response. "
+                f"Ensure the question is phrased as a question and aligns with {subdomain}."
+            )
+        else:
+            full_prompt = (
+                f"{domain_details['llm_guidance']}\n"
+                f"Based on the candidate's response '{context}', generate a detailed follow-up question in {subdomain}. "
+                f"Focus on general concepts, challenges, or methodologies in {subdomain}. "
+                f"Ensure the question is phrased as a question."
+            )
+    else:
+        if question_source == 'resume':
+            full_prompt = (
+                f"{resume_prompt}\n"
+                f"Generate a question in {subdomain} based primarily on the candidate's projects and experiences from the resume. "
+                f"Ensure the question is specific to the resume details but aligns with {subdomain} topics. "
+                f"Ensure the question is phrased as a question."
+            )
+        else:
+            full_prompt = (
+                f"{domain_details['llm_guidance']}\n{prompt}\n"
+                f"Generate a question in {subdomain} based on general concepts, challenges, or methodologies. "
+                f"Ensure the question is phrased as a question."
+            )
+        
+        # Add question type and topics if applicable
+        if question_type:
+            full_prompt += f"\nQuestion type: {question_type}"
+            if topics and question_type in topics:
+                full_prompt += f"\nTopics: {topics[question_type]}"
+    
+    # Generate question with retry logic
+    try:
+        response = chat_session.send_message(full_prompt)
         if response.text:
             questions = [q.strip() for q in response.text.split('\n') if q.strip() and not q.startswith("#")]
             for question in questions:
                 if question.endswith('?') and question not in asked_questions:
                     return question
-        else:
-            raise Exception("Failed to generate a question after retry.")
-    else:
-        raise Exception("Failed to generate questions.")
+            # Retry if no valid question
+            retry_prompt = f"{full_prompt}\nEnsure the response is a direct question ending with a question mark."
+            response = chat_session.send_message(retry_prompt)
+            questions = [q.strip() for q in response.text.split('\n') if q.strip() and not q.startswith("#")]
+            for question in questions:
+                if question.endswith('?') and question not in asked_questions:
+                    return question
+        raise Exception("Failed to generate a question.")
+    except Exception as e:
+        print(f"Error generating question: {e}")
+        raise
 
-# Function to check if the response is detailed enough for a follow-up question
-def should_follow_up(response):
-    keywords = ['experience', 'approach', 'method', 'challenge', 'solution', 'details', 'job', 'internship', 
-                'project', 'problem', 'implementation', 'design', 'optimization', 'tool', 'process', 'framework']
-    return any(re.search(rf"\b{kw}\b", response, re.IGNORECASE) for kw in keywords)
-
-# Main function to conduct the interview
 def conduct_interview():
-    # File path for the session history
+    """Conduct the interview with resume integration and adaptive questions."""
+    resume_path = r"C:\Users\uarif\Desktop\Cv's\V6\UsmanArif_resume.pdf"
+    if not os.path.exists(resume_path) or not resume_path.lower().endswith('.pdf'):
+        print(f"Error: Resume file {resume_path} does not exist or is not a PDF.")
+        return
+    
+    resume_data = extract_resume_info(resume_path)
+    save_resume_data(resume_data)
+    
     session_history_path = "session_history.txt"
-
-    # Open the file in write mode ('w') to overwrite old content or create a new one if it doesn't exist
     with open(session_history_path, "w") as file:
         file.write("")
-
-    # Load subdomains
-    subdomains = get_subdomains()
     
-    # Select subdomain
+    subdomains = get_subdomains()
     print("Please select the subdomain you want to be interviewed in:")
     for idx, domain in enumerate(subdomains, 1):
         print(f"{idx}. {domain}")
-    
     selected_idx = int(input("Enter the number of the subdomain: ")) - 1
     selected_subdomain = subdomains[selected_idx]
-
-    # Load domain details, intro prompt, first question, question distribution, and topics
+    
     subdomain_file = f"{selected_subdomain.replace(' ', '_').lower()}.txt"
     domain_details, intro_prompt, question_distribution, topics = load_domain_config(subdomain_file)
-
-    # Initialize prompt and context
+    
     prompt = f"You are conducting an interview for a role in {selected_subdomain}."
-    context = None
+    context_history = []
     asked_questions = []
-
-    # Calculate the number of questions for each type
-    total_questions = 1  # Example total number of questions
+    
+    total_questions = int(input("Enter number of questions: "))
     question_counts = {key: round(total_questions * (value / 100)) for key, value in question_distribution.items()}
-
-    # Ensure the total number of questions is correct
+    
     while sum(question_counts.values()) < total_questions:
         for key in question_counts:
             if question_counts[key] < total_questions * (question_distribution[key] / 100):
                 question_counts[key] += 1
                 break
-
-    # Start the interview with the first question
-    first_question = generate_questions(intro_prompt, selected_subdomain, domain_details, topics=topics)
-    question = first_question
-
+    
     for i in range(total_questions):
         if i == 0:
-            # Use the predefined first question for the first round
+            question = generate_questions(intro_prompt, selected_subdomain, domain_details, topics=topics, resume_data=resume_data, asked_questions=asked_questions)
             print(f"Q1: {question}")
             speak(question)
         else:
-            # Determine the type of question to generate
             question_type = random.choices(list(question_counts.keys()), weights=list(question_counts.values()))[0]
             question_counts[question_type] -= 1
-
-            # Generate a follow-up or new question based on context
-            if context and should_follow_up(context):
-                question = generate_questions(prompt, selected_subdomain, domain_details, context=context, follow_up=True, asked_questions=asked_questions, topics=topics)
-            else:
-                question = generate_questions(prompt, selected_subdomain, domain_details, question_type=question_type, asked_questions=asked_questions, topics=topics)
-
-            # Print the question type heading before the question
+            context = context_history[-1] if context_history else None
+            question = generate_questions(
+                prompt, selected_subdomain, domain_details, context=context,
+                follow_up=bool(context and should_follow_up(context)),
+                question_type=question_type, asked_questions=asked_questions,
+                topics=topics, resume_data=resume_data
+            )
             print(f"\n--- {question_type.upper()} QUESTION ---")
             print(f"Q{i+1}: {question}")
             speak(question)
-
-        # Wait for a short time for user to read the question
+        
         print("You have 10 seconds to understand the question...")
         time.sleep(1)
-
-        # Define video and audio file paths
+        
         video_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}_with_audio.mp4")
         audio_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}.wav")
         transcription, topics, sentiment, parsed_data = enhanced_record_and_transcribe(video_file, audio_file, question)
-
+        
         question_sentiments = {}
-
         if transcription and not transcription.startswith("Transcription error"):
-            context = transcription
+            context_history.append(transcription)
             question_number = i + 1
             question_sentiments[f"Q{question_number}"] = sentiment
         else:
-            context = "No answer provided due to transcription error."
+            context_history.append("No answer provided due to transcription error.")
             question_number = i + 1
             question_sentiments[f"Q{question_number}"] = "N/A"
-
-        # Add the asked question to the list
+        
         asked_questions.append(question)
-
+    
     convert_txt_to_csv(session_history_path, "session_history.csv")
     scoring.evaluate_answers_and_save()
-    emotion_detection_ser()
-    emotion_detection_fer()
-    fusion()
-    generate_report("evaluation_results.json", "fused_emotion_predictions.json")
-    
+    #emotion_detection_ser()
+    #emotion_detection_fer()
+    #fusion()
+    #generate_report("evaluation_results.json", "fused_emotion_predictions.json")
+
 if __name__ == "__main__":
     conduct_interview()
