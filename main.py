@@ -4,21 +4,24 @@ import random
 import google.generativeai as genai
 import re
 import pyttsx3
-import subprocess
-import signal
-from pydub import AudioSegment
-from transformers import pipeline
-from recording_transcription import record_and_transcribe
-from config_loader import load_domain_config, get_subdomains
-from context_awareness import parse_transcription, extract_topics, sentiment_score
-from FER import emotion_detection_fer
-from SER import emotion_detection_ser
-from late_fusion import fusion
-from report import generate_report
-from txt_to_csv import convert_txt_to_csv
-import scoring
+# import subprocess
+# import signal
+# from pydub import AudioSegment
+# from transformers import pipeline
 import dotenv
-import report_generation
+
+
+from utils.recording_transcription import record_and_transcribe
+from utils.config_loader import load_domain_config, get_subdomains
+from utils.txt_to_csv import convert_txt_to_csv
+from utils.report import generate_report
+from utils.context_awareness import parse_transcription, extract_topics, sentiment_score
+#import utils.report_generation
+
+from src.FER import emotion_detection_fer
+from src.SER import emotion_detection_ser
+from src.late_fusion import fusion
+import src.scoring
 
 dotenv.load_dotenv()
 
@@ -197,8 +200,8 @@ def conduct_interview():
         time.sleep(1)
 
         # Define video and audio file paths
-        video_file = os.path.abspath(f"session/response_{selected_subdomain}_{i+1}_with_audio.mp4")
-        audio_file = os.path.abspath(f"session/response_{selected_subdomain}_{i+1}.wav")
+        video_file = os.path.abspath(f"session/video/response_{selected_subdomain}_{i+1}_with_audio.mp4")
+        audio_file = os.path.abspath(f"session/audio/response_{selected_subdomain}_{i+1}.wav")
         transcription, topics, sentiment, parsed_data = enhanced_record_and_transcribe(video_file, audio_file, question)
 
         question_sentiments = {}
@@ -215,8 +218,8 @@ def conduct_interview():
         # Add the asked question to the list
         asked_questions.append(question)
 
-    convert_txt_to_csv(session_history_path, "session_history.csv")
-    scoring.evaluate_answers_and_save()
+    convert_txt_to_csv(session_history_path, "session/session_history.csv")
+    src.scoring.evaluate_answers_and_save()
     emotion_detection_ser()
     emotion_detection_fer()
     fusion()

@@ -45,7 +45,7 @@ def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
         segment = audio[start_ms:end_ms]
         last_segment = segment
         
-        seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{i}.wav"
+        seg_path = f"session/temp/temp_audio_segment_{os.path.basename(audio_path)}_{i}.wav"
         segment.export(seg_path, format="wav")
         segments.append((seg_path, start_ms / 1000, end_ms / 1000))
     
@@ -61,7 +61,7 @@ def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
                 last_path, last_start, last_end = segments.pop()
                 last_audio = AudioSegment.from_wav(last_path)
                 merged_audio = last_audio + segment
-                merged_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments-1}_merged.wav"
+                merged_path = f"session/temp/temp_audio_segment_{os.path.basename(audio_path)}_{num_segments-1}_merged.wav"
                 merged_audio.export(merged_path, format="wav")
 
                 # Replace the previous segment with merged one
@@ -70,7 +70,7 @@ def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
                 
                 segments.append((merged_path, last_start, end_ms / 1000))
         else:
-            seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments}.wav"
+            seg_path = f"session/temp/temp_audio_segment_{os.path.basename(audio_path)}_{num_segments}.wav"
             segment.export(seg_path, format="wav")
             segments.append((seg_path, start_ms / 1000, end_ms / 1000))
     
@@ -126,7 +126,7 @@ def get_response_wav_files(directory):
 
 
 def emotion_detection_ser():
-    directory_path = r"session"
+    directory_path = r"session/audio"
     file_list = get_response_wav_files(directory_path)
     
     if not file_list:

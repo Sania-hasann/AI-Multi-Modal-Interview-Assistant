@@ -248,7 +248,7 @@ def generate_report(evaluation_json_file, emotion_json_file):
     html_with_data = html_template.replace("{json_data}", json.dumps(report_data))
 
     # Save to File
-    with open("output.html", "w") as file:
+    with open("session/report/report.html", "w") as file:
         file.write(html_with_data)
 
 if __name__ == "__main__":
