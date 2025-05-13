@@ -1,33 +1,25 @@
 import os
-import requests
 import json
 from pydub import AudioSegment
+from transformers import pipeline
+import whisper
 
+# Load local models
+whisper_model = whisper.load_model("small")
+ser_model = pipeline("audio-classification", model="firdhokk/speech-emotion-recognition-with-openai-whisper-large-v3")
 
-API_URL = "https://api-inference.huggingface.co/models/firdhokk/speech-emotion-recognition-with-openai-whisper-large-v3"
-token = os.getenv("HF_TOKEN")
-headers = {"Authorization": f"Bearer {token}"}
-
+# Define custom emotions
+CUSTOM_EMOTIONS = ["neutral", "sad", "angry", "fearful", "happy"]
 
 def query(filename):
-    with open(filename, "rb") as f:
-        data = f.read()
-    
-    content_type = "audio/wav"
-    request_headers = headers.copy()
-    request_headers["Content-Type"] = content_type
-    
     try:
-        response = requests.post(API_URL, headers=request_headers, data=data)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Error: {response.status_code}, Response: {response.text}")
-            return None
+        results = ser_model(filename)
+        # Filter results to only include custom emotions
+        filtered_results = [r for r in results if r['label'] in CUSTOM_EMOTIONS]
+        return filtered_results if filtered_results else None
     except Exception as e:
         print(f"Exception: {str(e)}")
         return None
-
 
 def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
     audio = AudioSegment.from_wav(audio_path)
@@ -48,7 +40,6 @@ def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
         segment.export(seg_path, format="wav")
         segments.append((seg_path, start_ms / 1000, end_ms / 1000))
     
-    # Handle remaining audio (< chunk_duration_ms)
     if remaining_ms > 0:
         start_ms = num_segments * chunk_duration_ms
         end_ms = len(audio)
@@ -56,14 +47,12 @@ def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
 
         if len(segment) < min_segment_ms:
             if segments:
-                # Merge with previous segment
                 last_path, last_start, last_end = segments.pop()
                 last_audio = AudioSegment.from_wav(last_path)
                 merged_audio = last_audio + segment
                 merged_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments-1}_merged.wav"
                 merged_audio.export(merged_path, format="wav")
 
-                # Replace the previous segment with merged one
                 if os.path.exists(last_path):
                     os.remove(last_path)
                 
@@ -74,7 +63,6 @@ def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
             segments.append((seg_path, start_ms / 1000, end_ms / 1000))
     
     return segments
-
 
 def process_audio_segments(segments):
     all_results = []
@@ -113,7 +101,6 @@ def process_audio_segments(segments):
     
     return all_results
 
-
 def get_response_wav_files(directory):
     wav_files = []
     for filename in os.listdir(directory):
@@ -122,7 +109,6 @@ def get_response_wav_files(directory):
             if os.path.isfile(full_path) and os.path.getsize(full_path) > 0:
                 wav_files.append(full_path)
     return wav_files
-
 
 def emotion_detection_ser():
     directory_path = r"C:\Users\uarif\OneDrive\Documents\Semester 8\cutsomfyp2\scripts"
@@ -156,3 +142,7 @@ def emotion_detection_ser():
         print("JSON data saved to 'emotion_predictions_ser_multiple.json'.")
     else:
         print("No results to save.")
+
+if __name__ == "__main__":
+    emotion_detection_ser()
+    print("Emotion detection completed.")
