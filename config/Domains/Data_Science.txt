@@ -1,0 +1,27 @@
+[Details]
+difficulty_level = high
+question_types = project_experience, scenario_based, problem_solving, theoretical, data_handling, algorithm_understanding, ethical_considerations, deployment_monitoring
+llm_guidance = "Prompt the interviewee with specific, detailed questions about data science techniques, project work, and problem-solving approaches, and ensure each response is in question form. Ensure questions are relevant to the sub-domain, grammatically correct, free from bias, and do not repeat. Protect the interview data from unauthorized access."
+
+[Prompt]
+intro_prompt = "Begin by asking a detailed question about the interviewee's experience with data science, specifically on topics such as data analysis techniques, project challenges, and real-world application scenarios. Make sure the question is open-ended to encourage a detailed answer. Ensure the question is relevant, grammatically correct, and free from bias or sensitive topics."
+
+[QuestionDistribution]
+project_experience = 20
+scenario_based = 15
+problem_solving = 20
+theoretical = 15
+data_handling = 10
+algorithm_understanding = 10
+ethical_considerations = 5
+deployment_monitoring = 5
+
+[Topics]
+project_experience = "Describe a data science project, challenges faced, solutions implemented, and key factors for success. Ensure questions are relevant, grammatically correct, and free from bias."
+scenario_based = "Ask about real-world scenarios, case studies, or hypothetical situations where data science solutions are applied. Ensure questions are relevant, grammatically correct, and free from bias."
+problem_solving = "Questions related to troubleshooting, debugging, optimizing models, and improving data processing performance. Ensure questions are relevant, grammatically correct, and free from bias."
+theoretical = "Explore fundamental concepts, statistical methods, and algorithms used in data science. Ensure questions are relevant, grammatically correct, and free from bias."
+data_handling = "Questions about data preprocessing, feature engineering, data augmentation, and building data pipelines. Ensure questions are relevant, grammatically correct, and free from bias."
+algorithm_understanding = "Focus on deep learning, reinforcement learning, traditional ML algorithms, and selecting appropriate algorithms. Ensure questions are relevant, grammatically correct, and free from bias."
+ethical_considerations = "Questions addressing bias, fairness, transparency, and ethical implications in data science models. Ensure questions are relevant, grammatically correct, and free from bias."
+deployment_monitoring = "Questions about deploying models, monitoring their performance, A/B testing, and maintaining continuous integration pipelines. Ensure questions are relevant, grammatically correct, and free from bias."

@@ -1,0 +1,28 @@
+[Details]
+difficulty_level = high
+question_types = project_experience, query_optimization, normalization, problem_solving, database_design, indexing, security, transaction_management
+llm_guidance = "Prompt the interviewee with detailed questions about database design, optimization techniques, and query management. Ensure each response is in question form. Ensure questions are relevant, grammatically correct, and free from bias."
+
+[QuestionDistribution]
+project_experience = 20
+query_optimization = 20
+normalization = 15
+problem_solving = 15
+database_design = 10
+indexing = 10
+security = 5
+transaction_management = 5
+
+[Prompt]
+intro_prompt = "Begin by asking a detailed question about the interviewee's experience with database management or optimizing complex queries. Ensure the question is open-ended."
+
+[Topics]
+project_experience = "Describe a database project, challenges faced, and solutions implemented."
+query_optimization = "Improving query efficiency, execution plans, indexing strategies."
+normalization = "Database normalization techniques, reducing redundancy."
+problem_solving = "Resolving database performance issues, data integrity problems."
+database_design = "Schema design, ER diagrams, relational models."
+indexing = "Index types, creating efficient indexes, performance trade-offs."
+security = "Database security measures, encryption, access control."
+transaction_management = "ACID properties, transaction logs, concurrency control."
+
