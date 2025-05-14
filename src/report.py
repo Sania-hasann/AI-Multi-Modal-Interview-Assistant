@@ -312,7 +312,7 @@ def generate_report(evaluation_json_file, fused_emotion_json_file):
     html_with_data = html_template.replace("{json_data}", json.dumps(eval_data))
 
     # Save to File
-    with open("interview_report.html", "w") as file:
+    with open("session/report/interview_report.html", "w") as file:
         file.write(html_with_data)
 
 if __name__ == "__main__":
