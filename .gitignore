@@ -1,4 +1,5 @@
 venv/
+.env
 *.mp4
 *.wav
 tokenizers/
