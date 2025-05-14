@@ -15,7 +15,8 @@ from src.late_fusion import fusion
 from src.report import generate_report
 from src.txt_to_csv import convert_txt_to_csv
 from src.resume_data import extract_resume_info, save_resume_data
-
+import dotenv
+dotenv.load_dotenv()
 # Video and audio recording parameters
 RATE = 44100
 VIDEO_FPS = 20
@@ -120,7 +121,7 @@ def enhanced_record_and_transcribe(video_filename, audio_filename, current_quest
             sentiment = sentiment_score(transcription)
             formatted_topics = format_topics(topics[0] if topics else "")
             
-            with open("session_history.txt", "a") as file:
+            with open("session/session_history.txt", "a") as file:
                 file.write(f"Question: \"{current_question}\"\n")
                 file.write(f"Answer: \"{transcription}\"\n")
                 file.write(f"Topics: {formatted_topics}\n")
@@ -275,7 +276,7 @@ def conduct_interview():
     resume_data = extract_resume_info(resume_path)
     save_resume_data(resume_data)
     
-    session_history_path = "session_history.txt"
+    session_history_path = "session/session_history.txt"
     with open(session_history_path, "w") as file:
         file.write("")
     
@@ -340,7 +341,7 @@ def conduct_interview():
         
         asked_questions.append(question)
     
-    convert_txt_to_csv(session_history_path, "session_history.csv")
+    convert_txt_to_csv(session_history_path, "session/session_history.csv")
     scoring.evaluate_answers_and_save()
     emotion_detection_ser()
     emotion_detection_fer()

@@ -3,6 +3,8 @@ import pdfplumber
 import time
 import os
 import google.generativeai as genai
+import dotenv
+dotenv.load_dotenv()
 
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 

@@ -4,7 +4,8 @@ import signal
 import time
 from pydub import AudioSegment
 from transformers import pipeline
-
+import dotenv
+dotenv.load_dotenv()
 # Recording parameters
 RATE = 44100
 VIDEO_FPS = 20
