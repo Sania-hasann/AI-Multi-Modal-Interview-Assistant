@@ -137,9 +137,9 @@ def emotion_detection_ser():
             print(f"Error processing file {audio_file}: {str(e)}")
     
     if all_file_results:
-        with open("emotion_predictions_ser_multiple.json", "w") as json_file:
+        with open("session/emotion_predictions_ser_multiple.json", "w") as json_file:
             json.dump(all_file_results, json_file, indent=4)
-        print("JSON data saved to 'emotion_predictions_ser_multiple.json'.")
+        print("JSON data saved to 'session/emotion_predictions_ser_multiple.json'.")
     else:
         print("No results to save.")
 

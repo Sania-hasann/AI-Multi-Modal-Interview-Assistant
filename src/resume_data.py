@@ -109,7 +109,7 @@ def extract_resume_info(file_path):
         print(f"❌ Error processing resume: {e}")
         return {"projects": [], "experiences": [], "skills": []}
 
-def save_resume_data(resume_data, output_file="resume_data.json"):
+def save_resume_data(resume_data, output_file="session/resume_data.json"):
     """Save resume data to JSON file."""
     try:
         with open(output_file, "w") as f:

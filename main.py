@@ -345,7 +345,7 @@ def conduct_interview():
     emotion_detection_ser()
     emotion_detection_fer()
     fusion()
-    generate_report("evaluation_results.json", "fused_emotion_predictions.json")
+    generate_report("session/evaluation_results.json", "session/fused_emotion_predictions.json")
 
 if __name__ == "__main__":
     conduct_interview()

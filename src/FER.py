@@ -117,9 +117,9 @@ def emotion_detection_fer():
 
     # Save results to JSON
     if all_file_results:
-        with open("emotion_predictions_fer_multiple.json", "w") as json_file:
+        with open("session/emotion_predictions_fer_multiple.json", "w") as json_file:
             json.dump(all_file_results, json_file, indent=4)
-        print("JSON data saved to 'emotion_predictions_fer_multiple.json'.")
+        print("JSON data saved to 'session/emotion_predictions_fer_multiple.json'.")
     else:
         print("No results to save.")
 
