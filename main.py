@@ -5,16 +5,16 @@ import json
 import google.generativeai as genai
 import re
 import pyttsx3
-from config_loader import load_domain_config, get_subdomains
-from context_awareness import parse_transcription, extract_topics, sentiment_score
-from recording_transcription import record_and_transcribe
-from FER import emotion_detection_fer
-from SER import emotion_detection_ser
-from late_fusion import fusion
-from report import generate_report
-from txt_to_csv import convert_txt_to_csv
-import scoring
-from resume_data import extract_resume_info, save_resume_data
+import src.scoring as scoring
+from src.config_loader import load_domain_config, get_subdomains
+from src.context_awareness import parse_transcription, extract_topics, sentiment_score
+from src.recording_transcription import record_and_transcribe
+from src.FER import emotion_detection_fer
+from src.SER import emotion_detection_ser
+from src.late_fusion import fusion
+from src.report import generate_report
+from src.txt_to_csv import convert_txt_to_csv
+from src.resume_data import extract_resume_info, save_resume_data
 
 # Video and audio recording parameters
 RATE = 44100
@@ -267,7 +267,7 @@ def generate_questions(prompt, subdomain, domain_details, context=None, follow_u
 
 def conduct_interview():
     """Conduct the interview with resume integration and adaptive questions."""
-    resume_path = r"C:\Users\uarif\Desktop\Cv's\V6\UsmanArif_resume.pdf"
+    resume_path = r"assets/resume.pdf"
     if not os.path.exists(resume_path) or not resume_path.lower().endswith('.pdf'):
         print(f"Error: Resume file {resume_path} does not exist or is not a PDF.")
         return
@@ -323,9 +323,9 @@ def conduct_interview():
         
         print("You have 10 seconds to understand the question...")
         time.sleep(1)
-        
-        video_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}_with_audio.mp4")
-        audio_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}.wav")
+
+        video_file = os.path.abspath(f"session/video/response_{selected_subdomain}_{i+1}_with_audio.mp4")
+        audio_file = os.path.abspath(f"session/audio/response_{selected_subdomain}_{i+1}.wav")
         transcription, topics, sentiment, parsed_data = enhanced_record_and_transcribe(video_file, audio_file, question)
         
         question_sentiments = {}

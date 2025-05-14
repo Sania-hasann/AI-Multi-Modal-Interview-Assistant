@@ -95,7 +95,7 @@ def get_response_video_files(directory):
     return video_files
 
 def emotion_detection_fer():
-    directory_path = r"C:\Users\uarif\OneDrive\Documents\Semester 8\cutsomfyp2\scripts"
+    directory_path = r"session/video"
     file_list = get_response_video_files(directory_path)
 
     if not file_list:

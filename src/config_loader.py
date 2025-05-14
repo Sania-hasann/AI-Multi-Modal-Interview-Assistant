@@ -3,15 +3,15 @@ import configparser
 
 # Load configuration files
 subdomain_config = configparser.ConfigParser()
-subdomain_config.read('subdomain_config.ini')
+subdomain_config.read('config/subdomain_config.ini')
 
 hallucination_config = configparser.ConfigParser()
-hallucination_config.read('hallucination_handling_config.ini')
+hallucination_config.read('config/hallucination_handling_config.ini')
 
 # Function to load subdomain configuration
 def load_domain_config(subdomain_file):
     config = configparser.ConfigParser()
-    config.read(os.path.join("domains", subdomain_file))
+    config.read(os.path.join("config/domains", subdomain_file))
 
     if "Details" not in config or "Prompt" not in config:
         raise KeyError(f"Missing 'Details' or 'Prompt' section in {subdomain_file}")

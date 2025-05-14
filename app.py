@@ -99,8 +99,8 @@ if uploaded_file:
             time.sleep(1)
 
             # Start recording audio and video
-            video_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}_with_audio.mp4")
-            audio_file = os.path.abspath(f"response_{selected_subdomain}_{i+1}.wav")
+            video_file = os.path.abspath(f"session/video/response_{selected_subdomain}_{i+1}_with_audio.mp4")
+            audio_file = os.path.abspath(f"session/audio/response_{selected_subdomain}_{i+1}.wav")
             transcription, topics, sentiment, parsed_data = record_and_transcribe(video_file, audio_file, question)
 
             if transcription and not transcription.startswith("Transcription error"):

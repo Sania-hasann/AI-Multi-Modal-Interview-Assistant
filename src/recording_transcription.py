@@ -19,9 +19,13 @@ def record_video_audio(video_filename):
     if video_dir:
         os.makedirs(video_dir, exist_ok=True)
 
-    # Hardcoded device names (replace if needed)
-    raw_video_line = '"Integrated Camera" (video)'
-    raw_audio_line = '"Microphone Array (AMD Audio Device)" (audio)'
+    # raw_video_line = '"Integrated Camera" (video)'
+    # raw_audio_line = '"Microphone Array (AMD Audio Device)" (audio)'
+
+    raw_video_line = '"HP Wide Vision HD Camera" (video)'
+    raw_audio_line = '"Headset (Airbud 625 Pro)" (audio)'
+    
+    
 
     def extract_device_name(raw_line):
         start = raw_line.find('"') + 1

@@ -4,12 +4,12 @@ from gensim import corpora, models
 import nltk
 
 # Set the NLTK data path first, before any downloads
-nltk.data.path.append(r"C:\Users\uarif\OneDrive\Documents\Semester 8\cutsomfyp2")
+nltk.data.path.append(r"lib")
 
 # Download all required NLTK resources silently
 nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
-nltk.download('punkt_tab', quiet=True, download_dir=r'C:\Users\uarif\OneDrive\Documents\Semester 8\cutsomfyp2')
+nltk.download('punkt_tab', quiet=True, download_dir=r"lib")
 
 # Import NLTK modules after downloads
 from nltk.corpus import stopwords

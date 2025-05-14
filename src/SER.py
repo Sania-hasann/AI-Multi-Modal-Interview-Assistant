@@ -36,7 +36,7 @@ def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
         segment = audio[start_ms:end_ms]
         last_segment = segment
         
-        seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{i}.wav"
+        seg_path = f"session/temp/temp_audio_segment_{os.path.basename(audio_path)}_{i}.wav"
         segment.export(seg_path, format="wav")
         segments.append((seg_path, start_ms / 1000, end_ms / 1000))
     
@@ -50,15 +50,15 @@ def segment_audio(audio_path, chunk_duration_ms=3000, min_segment_ms=1000):
                 last_path, last_start, last_end = segments.pop()
                 last_audio = AudioSegment.from_wav(last_path)
                 merged_audio = last_audio + segment
-                merged_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments-1}_merged.wav"
+                merged_path = f"session/temp/temp_audio_segment_{os.path.basename(audio_path)}_{num_segments-1}_merged.wav"
                 merged_audio.export(merged_path, format="wav")
 
-                if os.path.exists(last_path):
-                    os.remove(last_path)
+                # if os.path.exists(last_path):
+                #     os.remove(last_path)
                 
                 segments.append((merged_path, last_start, end_ms / 1000))
         else:
-            seg_path = f"temp_audio_segment_{os.path.basename(audio_path)}_{num_segments}.wav"
+            seg_path = f"session/temp/temp_audio_segment_{os.path.basename(audio_path)}_{num_segments}.wav"
             segment.export(seg_path, format="wav")
             segments.append((seg_path, start_ms / 1000, end_ms / 1000))
     
@@ -71,9 +71,9 @@ def process_audio_segments(segments):
             if not os.path.exists(seg_path):
                 print(f"Segment does not exist: {seg_path}")
                 continue
-            if os.path.getsize(seg_path) == 0:
-                print(f"Empty segment file: {seg_path}")
-                os.remove(seg_path)
+            # if os.path.getsize(seg_path) == 0:
+            #     print(f"Empty segment file: {seg_path}")
+            #     os.remove(seg_path)
                 continue
             
             output = query(seg_path)
@@ -95,9 +95,9 @@ def process_audio_segments(segments):
                 print(f"No valid output for segment: {seg_path}")
         except Exception as e:
             print(f"Unexpected error processing segment {seg_path}: {str(e)}")
-        finally:
-            if os.path.exists(seg_path):
-                os.remove(seg_path)
+        # finally:
+        #     if os.path.exists(seg_path):
+        #         os.remove(seg_path)
     
     return all_results
 
@@ -111,7 +111,7 @@ def get_response_wav_files(directory):
     return wav_files
 
 def emotion_detection_ser():
-    directory_path = r"C:\Users\uarif\OneDrive\Documents\Semester 8\cutsomfyp2\scripts"
+    directory_path = r"session/audio"
     file_list = get_response_wav_files(directory_path)
     
     if not file_list:

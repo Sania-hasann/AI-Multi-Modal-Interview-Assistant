@@ -119,8 +119,8 @@ def save_resume_data(resume_data, output_file="resume_data.json"):
         print(f"❌ Error saving resume data: {e}")
 
 if __name__ == "__main__":
-    resume_path = r"C:\Users\uarif\Desktop\owais_resume-1.pdf"  # Change this path
-    output_file = "resume_data_1.json"
+    resume_path = r"assets/resume/"
+    output_file = "session/resume_data_1.json"
 
     resume_data = extract_resume_info(resume_path)
     save_resume_data(resume_data, output_file)
