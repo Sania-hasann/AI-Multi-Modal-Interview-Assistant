@@ -133,10 +133,10 @@ def enhanced_record_and_transcribe(video_filename, audio_filename, current_quest
     except Exception as e:
         print(f"Error in recording/transcription: {e}")
         return "Transcription error", None, None, None
-    finally:
-        for file in [video_filename, audio_filename]:
-            if os.path.exists(file):
-                os.remove(file)
+    # finally:
+    #     for file in [video_filename, audio_filename]:
+    #         if os.path.exists(file):
+    #             os.remove(file)
 
 def should_follow_up(response):
     """Check if response is detailed enough for a follow-up."""
@@ -145,7 +145,7 @@ def should_follow_up(response):
     return any(re.search(rf"\b{kw}\b", response, re.IGNORECASE) for kw in keywords)
 
 def generate_questions(prompt, subdomain, domain_details, context=None, follow_up=False, question_type=None, asked_questions=None, topics=None, resume_data=None):
-    """Generate interview questions with a mix of resume-based and subdomain-based prompts, prioritizing real-world relevance."""
+    """Generate diverse interview questions from resume projects, experiences, skills, or subdomain configs, mimicking real-world interviews."""
     chat_session = model.start_chat(history=[])
     if asked_questions is None:
         asked_questions = []
@@ -153,17 +153,17 @@ def generate_questions(prompt, subdomain, domain_details, context=None, follow_u
     # Check resume relevance
     use_resume = resume_data and is_resume_relevant(resume_data, subdomain)
 
-    # Resume prompt for relevant subdomains
+    # Prepare resume prompt with all projects, experiences, skills
     resume_prompt = ""
     if use_resume:
-        projects = ", ".join(resume_data['projects']) if resume_data['projects'] else "None"
-        experiences = ", ".join(resume_data['experiences']) if resume_data['experiences'] else "None"
-        skills = ", ".join(resume_data['skills']) if resume_data['skills'] else "None"
+        projects = resume_data['projects'] if resume_data['projects'] else ["None"]
+        experiences = resume_data['experiences'] if resume_data['experiences'] else ["None"]
+        skills = resume_data['skills'] if resume_data['skills'] else ["None"]
         resume_prompt = (
             f"Candidate's resume details:\n"
-            f"Projects (highest priority): {projects}\n"
-            f"Experiences (high priority): {experiences}\n"
-            f"Skills (supporting context): {skills}\n"
+            f"Projects (prioritize for variety): {', '.join(projects)}\n"
+            f"Experiences (prioritize for variety): {', '.join(experiences)}\n"
+            f"Skills (use for context): {', '.join(skills)}\n"
         )
 
     # Select question source: 70% resume-based, 30% subdomain-based if relevant
@@ -178,58 +178,67 @@ def generate_questions(prompt, subdomain, domain_details, context=None, follow_u
     # Real-world question templates
     question_templates = {
         'technical': [
-            "Explain how you implemented {project_detail} in {project}. What technical challenges did you face?",
-            "How did you use {skill} in {project} to achieve {outcome}?",
-            "Describe the architecture of {project}. Why did you choose {technology}?"
+            "Explain how you implemented {detail} in {project/experience}. What technical challenges did you face?",
+            "How did you use {skill} in {project/experience} to achieve {outcome}?",
+            "Describe the design of {component} in {project/experience}. Why did you choose {technology}?"
         ],
         'behavioral': [
-            "Tell me about a challenge you faced in {project/experience} and how you resolved it.",
-            "Describe a time in {experience} when you demonstrated {skill}. What was the impact?",
-            "How did you handle a conflict or setback in {project}?"
+            "Describe a challenge in {project/experience} and how you resolved it.",
+            "Tell me about a time in {project/experience} when you used {skill}. What was the impact?",
+            "How did you handle a setback in {project/experience}?"
         ],
         'situational': [
-            "Given your experience with {skill}, how would you approach {subdomain_problem} in a new project?",
-            "If tasked with optimizing {project_component}, what steps would you take based on your {experience}?",
-            "How would you apply {skill} to solve {subdomain_challenge}?"
+            "Given your experience with {skill}, how would you approach {subdomain_problem} in {project/experience}?",
+            "If tasked with improving {component} in {project/experience}, what steps would you take?",
+            "How would you apply {skill} to solve {subdomain_challenge} based on {project/experience}?"
         ]
     }
+
+    # Select a random project or experience for resume-based questions
+    if use_resume and question_source == 'resume':
+        resume_items = projects + experiences
+        selected_item = random.choice(resume_items) if resume_items != ["None"] else "your work"
+        selected_skill = random.choice(skills) if skills != ["None"] else "a relevant skill"
+    else:
+        selected_item = "your work"
+        selected_skill = "a relevant skill"
 
     # Construct prompt
     if follow_up and context:
         if question_source == 'resume':
             full_prompt = (
                 f"{resume_prompt}\n"
-                f"Based on the candidate's response '{context}', generate a follow-up question in {subdomain}. "
-                f"Choose a {question_type} question style from: {', '.join(question_templates.keys())}. "
-                f"Focus on the candidate's projects and experiences, relating them to the response. "
-                f"Use real-world interview question patterns (technical, behavioral, or situational). "
-                f"Ensure the question is concise, specific, and ends with a question mark."
+                f"Based on the candidate's response '{context}', generate a follow-up {question_type} question in {subdomain}. "
+                f"Choose a question style from: {', '.join(question_templates.keys())}. "
+                f"Focus on '{selected_item}' and relate it to the response. Incorporate '{selected_skill}' if relevant. "
+                f"Ensure the question is concise, specific, varied, and mimics real-world interview questions (technical, behavioral, or situational). "
+                f"End with a question mark."
             )
         else:
             full_prompt = (
                 f"{domain_details['llm_guidance']}\n"
-                f"Based on the candidate's response '{context}', generate a follow-up question in {subdomain}. "
-                f"Choose a {question_type} question style from: {', '.join(question_templates.keys())}. "
-                f"Focus on general concepts, challenges, or methodologies in {subdomain}. "
-                f"Use real-world interview question patterns (technical, behavioral, or situational). "
-                f"Ensure the question is concise, specific, and ends with a question mark."
+                f"Based on the candidate's response '{context}', generate a follow-up {question_type} question in {subdomain}. "
+                f"Choose a question style from: {', '.join(question_templates.keys())}. "
+                f"Focus on general concepts or challenges in {subdomain}. "
+                f"Ensure the question is concise, specific, varied, and mimics real-world interview questions. "
+                f"End with a question mark."
             )
     else:
         if question_source == 'resume':
             full_prompt = (
                 f"{resume_prompt}\n"
-                f"Generate a {question_type} question in {subdomain} based primarily on the candidate's projects and experiences. "
+                f"Generate a {question_type} question in {subdomain} based on '{selected_item}'. "
                 f"Choose a question style from: {', '.join(question_templates.keys())}. "
-                f"Ensure the question is specific to resume details, aligns with {subdomain}, and mimics real-world interview questions. "
-                f"Ensure the question is concise, specific, and ends with a question mark."
+                f"Incorporate '{selected_skill}' if relevant. Ensure the question is specific, varied, and mimics real-world interview questions. "
+                f"End with a question mark."
             )
         else:
             full_prompt = (
                 f"{domain_details['llm_guidance']}\n{prompt}\n"
-                f"Generate a {question_type} question in {subdomain} based on general concepts, challenges, or methodologies. "
+                f"Generate a {question_type} question in {subdomain} based on general concepts or challenges. "
                 f"Choose a question style from: {', '.join(question_templates.keys())}. "
-                f"Ensure the question aligns with {subdomain} and mimics real-world interview questions. "
-                f"Ensure the question is concise, specific, and ends with a question mark."
+                f"Ensure the question is concise, specific, varied, and mimics real-world interview questions. "
+                f"End with a question mark."
             )
 
     # Add topics if applicable
@@ -244,7 +253,6 @@ def generate_questions(prompt, subdomain, domain_details, context=None, follow_u
             for question in questions:
                 if question not in asked_questions:
                     return question
-        # Retry with stricter instructions
         retry_prompt = f"{full_prompt}\nEnsure the response is a single, concise question ending with a question mark."
         response = chat_session.send_message(retry_prompt)
         questions = [q.strip() for q in response.text.split('\n') if q.strip() and q.endswith('?')]
