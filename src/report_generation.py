@@ -152,8 +152,7 @@ def generate_report(evaluation_json_file, emotion_json_file):
                 <img src="person-placeholder.png" alt="Person Image">
                 <div class="details">
                     <strong>Full Name</strong><br>
-                    Date of Interview: December 10, 2024<br>
-                    <strong>58%</strong> Cumulative AI Score
+                    Date of Interview: May 15, 2025<br>
                 </div>
             </div>
             <div class="stacked-bar">

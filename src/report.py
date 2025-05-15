@@ -208,8 +208,7 @@ def generate_report(evaluation_json_file, fused_emotion_json_file):
                 <div class="logo">Logo</div>
                 <div class="details">
                     <strong>Interview Report</strong><br>
-                    Date: May 10, 2025<br>
-                    <span class="score">Cumulative AI Score: 58%</span>
+                    Date: May 15, 2025<br>
                 </div>
             </div>
             <div class="chart-container">
