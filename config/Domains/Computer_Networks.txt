@@ -22,33 +22,7 @@ security = "Network security, firewalls, intrusion detection systems."
 performance_optimization = "Latency reduction, bandwidth optimization."
 scenario_based = "Real-world networking scenarios, case studies."
 theoretical = "OSI and TCP/IP models, theoretical foundations of networking."
-[Details]
-difficulty_level = high
-question_types = project_experience, network_design, troubleshooting, protocols, security, performance_optimization, scenario_based, theoretical
-llm_guidance = "Prompt the interviewee with detailed questions about networking protocols, design principles, and security measures. Ensure each response is in question form. Ensure questions are relevant, grammatically correct, and free from bias."
 
-[QuestionDistribution]
-project_experience = 20
-network_design = 20
-troubleshooting = 15
-protocols = 15
-security = 10
-performance_optimization = 10
-scenario_based = 5
-theoretical = 5
-
-[Prompt]
-intro_prompt = "Begin by asking a detailed question about the interviewee's experience with designing or troubleshooting network systems. Ensure the question is open-ended."
-
-[Topics]
-project_experience = "Describe a network project, challenges faced, and solutions implemented."
-network_design = "Network topologies, architecture, planning, and configuration."
-troubleshooting = "Diagnosing connectivity issues, debugging network failures."
-protocols = "TCP/IP, HTTP, FTP, DNS, and other networking protocols."
-security = "Network security, firewalls, intrusion detection systems."
-performance_optimization = "Latency reduction, bandwidth optimization."
-scenario_based = "Real-world networking scenarios, case studies."
-theoretical = "OSI and TCP/IP models, theoretical foundations of networking."
 
 [Prompt]
 intro_prompt = "Begin by asking a detailed question about the interviewee's experience with designing or troubleshooting network systems. Ensure the question is open-ended."

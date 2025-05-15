@@ -25,6 +25,3 @@ optimization = "Improving frame rates, reducing load times."
 debugging = "Debugging game logic and graphics issues."
 deployment = "Releasing games on multiple platforms."
 user_experience = "Ensuring player engagement and satisfaction."
-
-[Prompt]
-intro_prompt = "Begin by asking a detailed question about the interviewee's experience in game development, such as graphics programming or optimizing game performance."
