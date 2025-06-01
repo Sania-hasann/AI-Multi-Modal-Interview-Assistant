@@ -1,32 +1,61 @@
-# AI Multi-Modal Interview Assistant  
+# 🤖 ASAAN INTERVIEW – AI Multimodal Interview Assistant Bot
 
-## Overview  
-The **AI Multi-Modal Interview Assistant** is an AI-powered system designed to conduct intelligent, domain-specific interviews. It utilizes **Large Language Models (LLMs)** for question generation and dynamic follow-ups while integrating **Speech Emotion Recognition (SER)** and **Facial Emotion Recognition (FER)** to analyze candidate responses. The system evaluates speech, emotions, confidence levels, and distractions to provide real-time feedback and performance insights.  
+## 📝 Overview
 
-## Features  
-- **AI-Powered Questioning** – Uses LLMs - Gemini to generate domain-specific questions with contextual follow-ups.  
-- **SER & FER Analysis** – Assesses speech tone, facial expressions, and confidence levels.  
-- **Distraction and Cheating Detection** – Identifies unusual behavior or lack of engagement through head and gaze movement.  
-- **Adaptive Interviews** – Adjusts questions based on real-time candidate responses.  
-- **Insightful Feedback** – Provides performance reports and improvement suggestions.  
-- **Scalable & Cost-Efficient** – Leverages pre-trained AI models for smooth and effective interviews.  
+**ASAAN INTERVIEW** is an AI-powered multimodal interview assistant bot developed as our Final Year Project. It simulates an intelligent interviewer that can ask personalized technical questions, analyze behavioral patterns, and provide a detailed evaluation report — all in a secure and remote environment.
 
-## Use Cases  
-- **Companies** – Automate technical interviews and screen candidates efficiently.  
-- **Job Seekers** – Practice realistic AI-driven interviews with detailed feedback.  
-- **HR & Recruiters** – Get emotion-based insights into candidate confidence and engagement.  
+This system leverages LLMs, audio/video analysis, facial & vocal emotion recognition, resume-based personalization, and cheating surveillance to make virtual interviews smarter, fairer, and more insightful.
 
-## How It Works  
-1. The system initializes with **LLMs** for intelligent question generation.  
-2. **SER** and **FER** modules analyze speech tone and facial expressions.  
-3. Based on candidate responses, it generates **contextual follow-ups** using NLP techniques.  
-4. **Distraction detection** ensures engagement and focus.  
-5. A **performance report** is generated, highlighting strengths and improvement areas.  
+## ✨ Key Features
 
-## Future Enhancements  
-- Expand emotion analysis for more nuanced feedback.  
-- Integrate real-time voice modulation analysis.  
-- Support multilingual interviews.  
+- ⚙️ Domain-specific question generation using Large Language Models (LLMs)
+- 📄 Resume extraction to personalize questions based on experience and projects
+- 🎙️ Speech Emotion Recognition (SER)
+- 🎥 Facial Emotion Recognition (FER)
+- ❤️ Sentiment Analysis with late fusion of SER & FER
+- 🔍 Cheating Surveillance Module: head pose, gaze direction, mobile detection
+- 📊 Auto-generated detailed performance report (PDF)
+
+## 🧩 Core Modules
+
+### 1️⃣ LLM-Based Question Generation
+- Generates technical questions tailored to selected domain (e.g., Computer vision, AI, SE)
+- Integrates context from resume to make questions highly relevant
+
+### 2️⃣ Resume-Based Personalization
+- Extracts details like:
+  - Work experience
+  - Projects
+  - Technical skills
+- Used to align question generation with real background
+
+### 3️⃣ Emotion & Sentiment Analysis
+- **Speech Emotion Recognition (SER)**: Detects tone & vocal emotions
+- **Facial Emotion Recognition (FER)**: Real-time facial expression detection
+- **Late Fusion**: Combines SER & FER to enhance emotion classification accuracy
+- **Sentiment Analysis**: Evaluates polarity of verbal answers
+
+### 4️⃣ Cheating Surveillance System
+- Ensures fairness in remote settings using computer vision:
+  - 👀 Eye movement & gaze detection (via Dlib)
+  - 🧠 Head pose estimation (solvePnP algorithm)
+  - 📱 Real-time mobile phone detection using YOLOv12
+- Flags behavioral anomalies like repeated distractions, looking away, or device usage
+
+### 5️⃣ Report Generation
+- Summarizes candidate performance into a visual PDF report
+- Includes:
+  - Domain-wise Q/A scores
+  - Emotion/sentiment timelines
+  - Gaze/head behavior analysis
+  - Cheating alerts
+
+## 💼 Use Cases
+
+- 🧑‍💻 **Remote Job Interviews** – Conduct AI-based interviews and performance analysis
+- 🎓 **Online Exams & Viva** – Ensure academic integrity and evaluate expressiveness
+- 🤖 **AI Interview Practice** – Students & professionals can practice and receive feedback
+- 📈 **HR and Candidate Profiling** – Fair evaluation with emotional intelligence metrics
 
 ## Contributions  
 Contributions are welcome! Feel free to fork the repo, make improvements, and submit a pull request.  
